@@ -1230,7 +1230,7 @@ bool uploadSensorRawData(EzData &ezdataHanlder) {
 
     buf = cJSON_PrintUnformatted(rspObject);
     data = buf;
-//    data.replace("\"", "\\\"");
+    data.replace("\"", "\\\"");
     if (ezdataHanlder.set(data)) {
         log_i("ok");
         ret = true;

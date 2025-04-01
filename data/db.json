@@ -2,8 +2,8 @@
     "config": {
         "factory_state": true,
         "wifi": {
-            "ssid": "Iot",
-            "password": "Healeb!@#6413"
+            "ssid": "",
+            "password": ""
         },
         "rtc": {
             "sleep_interval": 60

@@ -381,8 +381,6 @@ void setup() {
 
 void loop() {
 
-    log_i("Loop Started.");
-
     ButtonEvent_t buttonEvent = {
         .id = E_BUTTON_NONE,
         .type = E_BUTTON_CLICK_TYPE_NONE
@@ -391,31 +389,31 @@ void loop() {
 
     switch (runMode) {
         case E_RUN_MODE_FACTORY: {
-            log_i("Run mode - factory.");
+            log_d("Run mode - factory.");
             factoryApp(&buttonEvent);
         }
         break;
 
         case E_RUN_MODE_MAIN: {
-            log_i("Run mode - main.");
+            log_d("Run mode - main.");
             mainApp(&buttonEvent);
         }
         break;
 
         case E_RUN_MODE_SETTING: {
-            log_i("Run mode - settings.");
+            log_d("Run mode - settings.");
             settingApp(&buttonEvent);
         }
         break;
 
         case E_RUN_MODE_APSETTING: {
-            log_i("Run mode - ap settings.");
+            log_d("Run mode - ap settings.");
             apSettingApp(&buttonEvent);
         }
         break;
 
         case E_RUN_MODE_EZDATA: {
-            log_i("Run mode - button.");
+            log_d("Run mode - button.");
             ezdataApp(&buttonEvent);
         }
         break;
@@ -423,7 +421,6 @@ void loop() {
         default: break;
     }
 
-    log_i("Loop phase 2");
     networkStatusUpdateServiceTask();
     ezdataServiceTask();
     countdownServiceTask();
@@ -1225,7 +1222,7 @@ bool uploadSensorRawData(EzData &ezdataHanlder) {
 
     cJSON_AddNumberToObject(bme688Object, "temperature", sensor.bme680.temperature);
     cJSON_AddNumberToObject(bme688Object, "humidity", sensor.bme680.humidity);
-    cJSON_AddNumberToObject(bme688Object, "pressure", sensor.bme680.pressure);
+    cJSON_AddNumberToObject(bme688Object, "pressure", sensor.bme680.pressure * 0.75006);
     cJSON_AddNumberToObject(bme688Object, "gas_resistance", sensor.bme680.gasResistance);
 
     cJSON_AddNumberToObject(rtcObject, "sleep_interval", db.rtc.sleepInterval);
@@ -1233,7 +1230,7 @@ bool uploadSensorRawData(EzData &ezdataHanlder) {
 
     buf = cJSON_PrintUnformatted(rspObject);
     data = buf;
-    data.replace("\"", "\\\"");
+//    data.replace("\"", "\\\"");
     if (ezdataHanlder.set(data)) {
         log_i("ok");
         ret = true;

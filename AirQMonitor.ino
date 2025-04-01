@@ -232,14 +232,6 @@ void setup() {
         ezdataMonitorServer = "http://192.168.2.46:5173";
     }
 
-    /** Start Beep */
-    if (db.buzzer.onoff == true) {
-        ledcAttachPin(BUZZER_PIN, 0);
-    } else {
-        ledcDetachPin(BUZZER_PIN);
-    }
-//    BUTTON_TONE();
-
     log_i("NVS init");
     preferences.begin("airq", false);
     successCounter = preferences.getUInt("OK", 0);
@@ -248,7 +240,8 @@ void setup() {
     log_i("Screen init");
     lcd.begin();
     lcd.setEpdMode(epd_mode_t::epd_fastest);
-    // lcd.sleep();
+    lcd.clear(TFT_WHITE);  // Initialize with white background
+    lcd.waitDisplay();
 
     statusView.begin();
 
@@ -322,9 +315,16 @@ void setup() {
 
     bme688.begin(BME68X_I2C_ADDR_HIGH, Wire1);
     log_w("BSEC library version %s.%s.%s.%s", String(bme688.version.major), String(bme688.version.minor), String(bme688.version.major_bugfix), String(bme688.version.minor_bugfix));
+    
+    // Initialize BME688 sensor
     if (!checkBme688SensorStatus())
     {
         log_e("BME688 sensor initialization failed. Exiting setup.");
+        // Set default values to prevent crashes
+        sensor.bme680.temperature = 0.0f;
+        sensor.bme680.humidity = 0.0f;
+        sensor.bme680.pressure = 0.0f;
+        sensor.bme680.gasResistance = 0.0f;
     }
     else
     {
@@ -343,7 +343,7 @@ void setup() {
             BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_TEMPERATURE,
             BSEC_OUTPUT_SENSOR_HEAT_COMPENSATED_HUMIDITY,
             BSEC_OUTPUT_GAS_PERCENTAGE
-          };
+        };
 
         bme688.updateSubscription(sensorList, 13, BSEC_SAMPLE_RATE_LP);
         log_i("BME688 sensor subscribed successfully.");
@@ -362,7 +362,6 @@ void setup() {
     } while (!isDataReady);
 
     if (db.factoryState || wakeupType == E_WAKEUP_TYPE_USER) {
-        FAIL_TONE();
         runMode = E_RUN_MODE_FACTORY;
     }
 
@@ -519,10 +518,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
         sensor.getSEN55MeasurementResult();
         sensor.getBme680MeasurementResult();
         sensor.getBatteryVoltageRaw();
-        sensor.getTimeString();
-        sensor.getDateString();
-
-        log_i("Sensors updated.");
 
         statusView.updateSCD40(
             sensor.scd40.co2,
@@ -541,13 +536,12 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             sensor.sen55.vocIndex,
             sensor.sen55.noxIndex
         );
-//        statusView.updateBME688(
-//            sensor.bme680.temperature,
-//            sensor.bme680.humidity,
-//            sensor.bme680.pressure,
-//            sensor.bme680.gasResistance
-//        );
-        statusView.updateTime(sensor.time.time, sensor.time.date);
+        statusView.updateBME688(
+            sensor.bme680.temperature,
+            sensor.bme680.humidity,
+            sensor.bme680.pressure,
+            sensor.bme680.gasResistance
+        );
 
         statusView.load();
         lastMillisecond = currentMillisecond;
@@ -574,13 +568,11 @@ void mainApp(ButtonEvent_t *buttonEvent) {
 
     if (WiFi.isConnected() && runingEzdataUpload && ezdataUploadCount-- > 0) {
         ezdataHanlder.setDeviceToken(db.ezdata2.devToken);
-        BUTTON_TONE();
         if (uploadSensorRawData(ezdataHanlder)) {
             successCounter += 1;
             preferences.putUInt("OK", successCounter);
             String msg = "OK:" + String(successCounter);
             statusView.displayNetworkStatus("Upload", msg.c_str());
-            SUCCESS_TONE();
             runingEzdataUpload = false;
             ezdataState = E_EZDATA_STATE_SUCCESS;
             ezdataStatus = true;
@@ -589,7 +581,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             preferences.putUInt("NG", failCounter);
             String msg = "NG:" + String(failCounter);
             statusView.displayNetworkStatus("Upload", msg.c_str());
-            FAIL_TONE();
         }
     }
 
@@ -635,21 +626,6 @@ void settingApp(ButtonEvent_t *buttonEvent) {
     }
 
     if (
-        buttonEvent->id == E_BUTTON_A
-        && buttonEvent->type == E_BUTTON_CLICK_TYPE_PRESS
-    ) {
-        if (db.buzzer.onoff == true) {
-            db.buzzer.onoff = false;
-            ledcDetachPin(BUZZER_PIN);
-        } else {
-            db.buzzer.onoff = true;
-            ledcAttachPin(BUZZER_PIN, 0);
-            BUTTON_TONE();
-        }
-        refresh = true;
-    }
-
-    if (
         buttonEvent->id == E_BUTTON_B
         && buttonEvent->type == E_BUTTON_CLICK_TYPE_SINGLE
     ) {
@@ -666,21 +642,12 @@ void settingApp(ButtonEvent_t *buttonEvent) {
     }
 
     if (refresh) {
-        if (db.buzzer.onoff == true) {
-            lcd.clear(TFT_BLACK);
-            lcd.waitDisplay();
-            lcd.clear(TFT_WHITE);
-            lcd.waitDisplay();
-            lcd.drawJpgFile(FILESYSTEM, "/settings1.jpg", 0, 0);
-            lcd.waitDisplay();
-        } else {
-            lcd.clear(TFT_BLACK);
-            lcd.waitDisplay();
-            lcd.clear(TFT_WHITE);
-            lcd.waitDisplay();
-            lcd.drawJpgFile(FILESYSTEM, "/settings.jpg", 0, 0);
-            lcd.waitDisplay();
-        }
+        lcd.clear(TFT_BLACK);
+        lcd.waitDisplay();
+        lcd.clear(TFT_WHITE);
+        lcd.waitDisplay();
+        lcd.drawJpgFile(FILESYSTEM, "/settings.jpg", 0, 0);
+        lcd.waitDisplay();
 
         lcd.drawString(mac, 34, 144, &fonts::efontCN_14);
         lcd.waitDisplay();
@@ -811,7 +778,6 @@ void apSettingApp(ButtonEvent_t *buttonEvent) {
 
             case E_AP_SETTING_STATE_AP:
                 apQrcode = "WIFI:T:nopass;S:" + apSSID + ";P:;H:false;;";
-                SUCCESS_TONE();
                 lcd.clear(TFT_BLACK);
                 lcd.waitDisplay();
                 lcd.clear(TFT_WHITE);
@@ -823,7 +789,6 @@ void apSettingApp(ButtonEvent_t *buttonEvent) {
             break;
 
             case E_AP_SETTING_STATE_WEB:
-                SUCCESS_TONE();
                 lcd.clear(TFT_BLACK);
                 lcd.waitDisplay();
                 lcd.clear(TFT_WHITE);
@@ -834,7 +799,6 @@ void apSettingApp(ButtonEvent_t *buttonEvent) {
             break;
 
             case E_AP_SETTING_STATE_DONE:
-                SUCCESS_TONE();
                 lcd.clear(TFT_BLACK);
                 lcd.waitDisplay();
                 lcd.clear(TFT_WHITE);
@@ -941,8 +905,6 @@ void buttonTask(void *) {
 void btnAClickEvent() {
     log_d("btnAClickEvent");
 
-    BUTTON_TONE();
-
     ButtonEvent_t buttonEvent = { .id = E_BUTTON_A, .type = E_BUTTON_CLICK_TYPE_SINGLE };
     if (xQueueSendToBack(buttonEventQueue, &buttonEvent, ( TickType_t ) 10 ) != pdPASS) {
         log_w("buttonEventQueue send Failed");
@@ -952,8 +914,6 @@ void btnAClickEvent() {
 
 void btnALongPressStartEvent() {
     log_d("btnALongPressStartEvent");
-
-    BUTTON_TONE();
 
     ButtonEvent_t buttonEvent = { .id = E_BUTTON_A, .type = E_BUTTON_CLICK_TYPE_PRESS };
     if (xQueueSendToBack(buttonEventQueue, &buttonEvent, ( TickType_t ) 10 ) != pdPASS) {
@@ -965,8 +925,6 @@ void btnALongPressStartEvent() {
 void btnBClickEvent() {
     log_d("btnBClickEvent");
 
-    BUTTON_TONE();
-
     ButtonEvent_t buttonEvent = { .id = E_BUTTON_B, .type = E_BUTTON_CLICK_TYPE_SINGLE };
     if (xQueueSendToBack(buttonEventQueue, &buttonEvent, ( TickType_t ) 10 ) != pdPASS) {
         log_w("buttonEventQueue send Failed");
@@ -977,8 +935,6 @@ void btnBClickEvent() {
 void btnBLongPressStartEvent() {
     log_d("btnBLongPressStartEvent");
 
-    BUTTON_TONE();
-
     ButtonEvent_t buttonEvent = { .id = E_BUTTON_B, .type = E_BUTTON_CLICK_TYPE_PRESS };
     if (xQueueSendToBack(buttonEventQueue, &buttonEvent, ( TickType_t ) 10 ) != pdPASS) {
         log_w("buttonEventQueue send Failed");
@@ -988,8 +944,6 @@ void btnBLongPressStartEvent() {
 
 void btnPowerClickEvent() {
     log_d("btnPowerClickEvent");
-
-    BUTTON_TONE();
 
     ButtonEvent_t buttonEvent = { .id = E_BUTTON_POWER, .type = E_BUTTON_CLICK_TYPE_SINGLE };
     if (xQueueSendToBack(buttonEventQueue, &buttonEvent, ( TickType_t ) 10 ) != pdPASS) {
@@ -1222,7 +1176,7 @@ bool uploadSensorRawData(EzData &ezdataHanlder) {
 
     cJSON_AddNumberToObject(bme688Object, "temperature", sensor.bme680.temperature);
     cJSON_AddNumberToObject(bme688Object, "humidity", sensor.bme680.humidity);
-    cJSON_AddNumberToObject(bme688Object, "pressure", sensor.bme680.pressure * 0.75006);
+    cJSON_AddNumberToObject(bme688Object, "pressure", sensor.bme680.pressure);
     cJSON_AddNumberToObject(bme688Object, "gas_resistance", sensor.bme680.gasResistance);
 
     cJSON_AddNumberToObject(rtcObject, "sleep_interval", db.rtc.sleepInterval);

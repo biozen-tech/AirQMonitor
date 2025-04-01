@@ -429,7 +429,6 @@ static void postConfig() {
     cJSON *rtcObject = NULL;
     cJSON *ntpObject = NULL;
     cJSON *ezdataObject = NULL;
-    cJSON *buzzerObject = NULL;
     cJSON *nicknameObject = NULL;
     bool flag = false;
 
@@ -489,17 +488,6 @@ static void postConfig() {
         cJSON *tokenObject = cJSON_GetObjectItem(ezdataObject, "dev_token");
         db.ezdata2.devToken = tokenObject->valuestring;
         db.factoryState = false;
-    }
-
-    buzzerObject = cJSON_GetObjectItem(configObject, "buzzer");
-    if (buzzerObject) {
-        if (cJSON_IsTrue(cJSON_GetObjectItem(buzzerObject, "mute"))) {
-            db.buzzer.onoff = true;
-            ledcAttachPin(BUZZER_PIN, 0);
-        } else {
-            db.buzzer.onoff = false;
-            ledcDetachPin(BUZZER_PIN);
-        }
     }
 
     nicknameObject = cJSON_GetObjectItem(configObject, "nickname");

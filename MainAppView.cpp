@@ -1,5 +1,22 @@
 #include "MainAppView.hpp"
 
+// Layout constants
+const int32_t _border = 2;
+const int32_t _padding = 2;
+
+// Base cursor positions for each section
+const int32_t _scd40BaseCursorX = 2;
+const int32_t _scd40BaseCursorY = 2;
+
+const int32_t _sen55BaseCursorX = 2;
+const int32_t _sen55BaseCursorY = 2 + 69 + 2;
+
+const int32_t _bme688BaseCursorX = 2;
+const int32_t _bme688BaseCursorY = 2 + 69 + 2 + 39 + 2;
+
+const int32_t _powerBaseCursorX = 2;
+const int32_t _powerBaseCursorY = 2 + 69 + 2 + 39 + 2 + 69 + 2;
+
 StatusView::StatusView() {}
 
 
@@ -18,7 +35,6 @@ void StatusView::begin() {
     _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
     _canvas->fillSprite(TFT_WHITE);
     initLOGO();
-    initTime();
     initSCD40();
     initPower();
     initSEN55();
@@ -27,7 +43,7 @@ void StatusView::begin() {
 }
 
 
-void StatusView::initTime()
+void StatusView::initStatus()
 {
     int32_t tempX = 0;
     int32_t tempY = 0;
@@ -35,138 +51,70 @@ void StatusView::initTime()
     int32_t tempH = 0;
 
     tempW = 97;
-    tempH = 50;
 
-    log_d("Time tempW: %d px", tempW);
-    log_d("Time tempH: %d px", tempH);
+    tempH = _border
+            + _padding
+            + _canvas->fontHeight(_statusTitleFont)
+            + _padding
+            + _canvas->fontHeight(_statusMsgFont)
+            + _padding
+            + _border;
+
+    log_d("Status width: %d px", tempW);
+    log_d("Status height: %d px", tempH);
 
     // button div
-    tempX = _timeBaseCursorX;
-    tempY = _timeBaseCursorY;
+    tempX = _powerBaseCursorX;
+    tempY = _powerBaseCursorY + 39 + 2;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    // Padding: 2px
+    // Header background
+    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_statusTitleFont) + (_padding * 2), TFT_BLACK);
+    // Header text
+    tempX = tempX + _border + _padding;
+    tempY = tempY + _border + _padding;
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_statusTitleFont), TFT_WHITE);
+    tempX = tempX + 5 + 2;
+    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
+    _canvas->drawString("Status", tempX, tempY, _statusTitleFont);
+    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
-    // time
-    tempX = _timeBaseCursorX + tempW / 2;
-    tempY = _timeBaseCursorY + _border + _padding;
-    _canvas->drawCenterString("00:00", tempX, tempY, _timeTimeFont);
-    _timeCanvasX = _timeBaseCursorX + _border + _padding;
-    _timeCanvasY = tempY;
+    _statusTitleCanvasX = tempX;
+    _statusTitleCanvasY = tempY;
 
-    // date
-    tempY = tempY + _canvas->fontHeight(_timeTimeFont);
-    _canvas->drawCenterString("2023-04-25", tempX, tempY, _timeDateFont);
-    _dateCanvasX = _timeBaseCursorX + _border + _padding;
-    _dateCanvasY = tempY;
-
-    _timeCanvas = new M5Canvas(_canvas);
-    _timeCanvas->createSprite(tempW - _border - _padding - _border - _padding, _timeCanvas->fontHeight(_timeTimeFont));
-    _timeCanvas->setBaseColor(TFT_WHITE);
-    _timeCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-
-    _dateCanvas = new M5Canvas(_canvas);
-    _dateCanvas->createSprite(tempW - _border - _padding - _border - _padding, _timeCanvas->fontHeight(_timeDateFont));
-    _dateCanvas->setBaseColor(TFT_WHITE);
-    _dateCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-}
-
-void StatusView::initStatus() {
-    int32_t tempX = 0;
-    int32_t tempY = 0;
-    int32_t tempW = 0;
-    int32_t tempH = 0;
-
-    tempX = _statusBaseCursorX;
-    tempY = _statusBaseCursorY;
-
-    tempW = 97;
-    tempH = 52;
-
-    _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    _canvas->drawFastHLine(tempX + 2, tempY + tempH / 2, 93, TFT_BLACK);
-
-    tempY = (
-        _statusBaseCursorY 
-        + _border 
-        + _padding 
-        + (
-            tempH / 2 
-            - _canvas->fontHeight(_statusTitleFont) 
-            - _padding 
-            - _padding
-        ) / 2
+    _statusTitleCanvas = new M5Canvas(_canvas);
+    _statusTitleCanvas->createSprite(
+        _statusTitleCanvas->textWidth("Status", _statusTitleFont),
+        _statusTitleCanvas->fontHeight(_statusTitleFont)
     );
-    _canvas->drawCenterString("WiFi", tempX + tempW / 2, tempY, _statusTitleFont);
-    tempY = (
-        _statusBaseCursorY 
-        + tempH / 2 
-        + _border 
-        + _padding 
-        + (
-            tempH / 2 
-            - _canvas->fontHeight(_statusMsgFont) 
-            - _padding 
-            - _padding
-        ) / 2
-    );
-    _canvas->drawCenterString("......", tempX + tempW / 2, tempY, _statusMsgFont);
+    _statusTitleCanvas->setBaseColor(TFT_WHITE);
+    _statusTitleCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
-    _stautsTitleCanvas = new M5Canvas(_canvas);
-    _statusTitleCanvasX = _statusBaseCursorX + _border + _padding;
-    _statusTitleCanvasY = (
-        _statusBaseCursorY
-        + _border
-        + _padding
-        + (
-            tempH / 2
-            - _canvas->fontHeight(_statusTitleFont)
-            - _padding
-            - _padding
-        ) / 2
+    _statusTitleCanvas1 = new M5Canvas(_lcd);
+    _statusTitleCanvas1->createSprite(
+        _statusTitleCanvas1->textWidth("Status", _statusTitleFont),
+        _statusTitleCanvas1->fontHeight(_statusTitleFont)
     );
-    _stautsTitleCanvas->createSprite(
-        tempW - _border - _padding - _border - _padding, 
-        _stautsTitleCanvas->fontHeight(_statusTitleFont)
-    );
-    _stautsTitleCanvas->setBaseColor(TFT_WHITE);
-    _stautsTitleCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+    _statusTitleCanvas1->setBaseColor(TFT_WHITE);
+    _statusTitleCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
 
-    _stautsTitleCanvas1 = new M5Canvas(_lcd);
-    _stautsTitleCanvas1->createSprite(
-        tempW - _border - _padding - _border - _padding, 
-        _stautsTitleCanvas1->fontHeight(_statusTitleFont)
-    );
-    _stautsTitleCanvas1->setBaseColor(TFT_WHITE);
-    _stautsTitleCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
+    _statusMsgCanvasX = tempX;
+    _statusMsgCanvasY = tempY + _canvas->fontHeight(_statusTitleFont) + _padding;
 
-    _stautsMsgCanvas = new M5Canvas(_canvas);
-    _statusMsgCanvasX = _statusBaseCursorX + _border + _padding;
-    _statusMsgCanvasY = (
-        _statusBaseCursorY 
-        + tempH / 2 
-        + _border 
-        + _padding 
-        + (
-            tempH / 2 
-            - _canvas->fontHeight(_statusMsgFont) 
-            - _padding 
-            - _padding
-        ) / 2
+    _statusMsgCanvas = new M5Canvas(_canvas);
+    _statusMsgCanvas->createSprite(
+        _statusMsgCanvas->textWidth("n/a", _statusMsgFont),
+        _statusMsgCanvas->fontHeight(_statusMsgFont)
     );
-    _stautsMsgCanvas->createSprite(
-        tempW - _border - _padding - _border - _padding, 
-        _stautsMsgCanvas->fontHeight(_statusMsgFont)
-    );
-    _stautsMsgCanvas->setBaseColor(TFT_WHITE);
-    _stautsMsgCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+    _statusMsgCanvas->setBaseColor(TFT_WHITE);
+    _statusMsgCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
-    _stautsMsgCanvas1 = new M5Canvas(_lcd);
-    _stautsMsgCanvas1->createSprite(
-        tempW - _border - _padding - _border - _padding, 
-        _stautsMsgCanvas1->fontHeight(_statusMsgFont)
+    _statusMsgCanvas1 = new M5Canvas(_lcd);
+    _statusMsgCanvas1->createSprite(
+        _statusMsgCanvas1->textWidth("n/a", _statusMsgFont),
+        _statusMsgCanvas1->fontHeight(_statusMsgFont)
     );
-    _stautsMsgCanvas1->setBaseColor(TFT_WHITE);
-    _stautsMsgCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
+    _statusMsgCanvas1->setBaseColor(TFT_WHITE);
+    _statusMsgCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
 }
 
 
@@ -177,7 +125,7 @@ void StatusView::initSCD40()
     int32_t tempW = 0;
     int32_t tempH = 0;
 
-    tempW = 97;
+    tempW = _lcd->width() - 4;  // Use full width minus borders
 
     tempH = _border
             + _padding
@@ -198,13 +146,16 @@ void StatusView::initSCD40()
     tempX = _scd40BaseCursorX;
     tempY = _scd40BaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    // Padding: 2px
+    // Header background
+    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_scd40TitleFont) + (_padding * 2), TFT_BLACK);
+    // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
-    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_scd40TitleFont), TFT_BLACK);
-    // 5px
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_scd40TitleFont), TFT_WHITE);
     tempX = tempX + 5 + 2;
+    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
     _canvas->drawString("SCD40", tempX, tempY, _scd40TitleFont);
+    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
     // Co2
     tempX = _scd40BaseCursorX + _border + _padding;
@@ -259,7 +210,6 @@ void StatusView::initSCD40()
     );
     _humiCanvas->setBaseColor(TFT_WHITE);
     _humiCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-
 }
 
 
@@ -270,7 +220,7 @@ void StatusView::initPower()
     int32_t tempW = 0;
     int32_t tempH = 0;
 
-    tempW = 97;
+    tempW = _lcd->width() - 4;  // Use full width minus borders
 
     tempH = _border
             + _padding
@@ -287,10 +237,16 @@ void StatusView::initPower()
     tempX = _powerBaseCursorX;
     tempY = _powerBaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    // Padding: 2px
+    // Header background
+    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_powerTitleFont) + (_padding * 2), TFT_BLACK);
+    // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
-    tempY += 2;
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_powerTitleFont), TFT_WHITE);
+    tempX = tempX + 5 + 2;
+    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
+    _canvas->drawString("Power", tempX, tempY, _powerTitleFont);
+    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
     // BAT
     _canvas->drawString("BAT: 0.0V", tempX, tempY, _poweroptionFont);
@@ -326,25 +282,25 @@ void StatusView::initPower()
 void StatusView::initLOGO()
 {
     _nicknameCanvasX = 2;
-    _nicknameCanvasY = 2 + 50 + 2 + 69 + 2 + 39 + 2;
+    _nicknameCanvasY = 2 + 69 + 2 + 39 + 2 + 69 + 2 + 39 + 2;
 
     _nicknameCanvas = new M5Canvas(_canvas);
-    _nicknameCanvas->createSprite(97, 32);
+    _nicknameCanvas->createSprite(_lcd->width() - 4, 32);  // Use full width minus borders
     _nicknameCanvas->setBaseColor(TFT_BLACK);
     _nicknameCanvas->setTextColor(TFT_WHITE, TFT_BLACK);
  
     _nicknameCanvas->clear();
-    int32_t cursorX = 97 / 2;
+    int32_t cursorX = (_lcd->width() - 4) / 2;  // Center in full width
     int32_t cursorY = (32 - _nicknameCanvas->fontHeight(&fonts::efontCN_14)) / 2;
     _nicknameCanvas->drawCenterString("AirQ", cursorX, cursorY, &fonts::efontCN_14);
     _updateImpl(_nicknameCanvas, _nicknameCanvasX, _nicknameCanvasY);
 
     _nicknameCanvas1 = new M5Canvas(_lcd);
-    _nicknameCanvas1->createSprite(97, 32);
+    _nicknameCanvas1->createSprite(_lcd->width() - 4, 32);  // Use full width minus borders
     _nicknameCanvas1->setBaseColor(TFT_BLACK);
     _nicknameCanvas1->setTextColor(TFT_WHITE, TFT_BLACK);
     _nicknameCanvas1->clear();
-    cursorX = 97 / 2;
+    cursorX = (_lcd->width() - 4) / 2;  // Center in full width
     cursorY = (32 - _nicknameCanvas1->fontHeight(&fonts::efontCN_14)) / 2;
     _nicknameCanvas1->drawCenterString("AirQ", cursorX, cursorY, &fonts::efontCN_14);
 }
@@ -357,7 +313,7 @@ void StatusView::initSEN55()
     int32_t tempW = 0;
     int32_t tempH = 0;
 
-    tempW = 97;
+    tempW = _lcd->width() - 4;  // Use full width minus borders
 
     tempH = _border
             + _padding
@@ -388,13 +344,16 @@ void StatusView::initSEN55()
     tempX = _sen55BaseCursorX;
     tempY = _sen55BaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    // Padding: 2px
+    // Header background
+    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_sen55TitleFont) + (_padding * 2), TFT_BLACK);
+    // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
-    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_sen55TitleFont), TFT_BLACK);
-    // 5px
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_sen55TitleFont), TFT_WHITE);
     tempX = tempX + 5 + 2;
+    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
     _canvas->drawString("SEN55", tempX, tempY, _sen55TitleFont);
+    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
     // PM1.0
     tempX = _sen55BaseCursorX + _border + _padding;
@@ -548,7 +507,7 @@ void StatusView::initBME688()
     int32_t tempW = 0;
     int32_t tempH = 0;
 
-    tempW = 97;
+    tempW = _lcd->width() - 4;  // Use full width minus borders
 
     tempH = _border
             + _padding
@@ -571,13 +530,16 @@ void StatusView::initBME688()
     tempX = _bme688BaseCursorX;
     tempY = _bme688BaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    // Padding: 2px
+    // Header background
+    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_bme688TitleFont) + (_padding * 2), TFT_BLACK);
+    // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
-    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_bme688TitleFont), TFT_BLACK);
-    // 5px
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_bme688TitleFont), TFT_WHITE);
     tempX = tempX + 5 + 2;
+    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
     _canvas->drawString("BME688", tempX, tempY, _bme688TitleFont);
+    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
     // Temperature
     tempX = _bme688BaseCursorX + _border + _padding;
@@ -651,42 +613,6 @@ void StatusView::initBME688()
     _bme688GasCanvas->setBaseColor(TFT_WHITE);
     _bme688GasCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 }
-
-void StatusView::updateTime(const char *time, const char *date)
-{
-    _timeCanvas->clear(TFT_WHITE);
-    _dateCanvas->clear(TFT_WHITE);
-    _timeCanvas->drawCenterString(time, _timeCanvas->width() / 2, 0, _timeTimeFont);
-    _dateCanvas->drawCenterString(date, _dateCanvas->width() / 2, 0, _timeDateFont);
-
-    _updateImpl(_timeCanvas, _timeCanvasX, _timeCanvasY);
-    _updateImpl(_dateCanvas, _dateCanvasX, _dateCanvasY);
-}
-
-
-void StatusView::updateSCD40(uint16_t co2, float temperature, float humidity)
-{
-    char str[8] = { 0 };
-
-    _co2Canvas->clear(TFT_WHITE);
-    _tempCanvas->clear(TFT_WHITE);
-    _humiCanvas->clear(TFT_WHITE);
-
-    sprintf(str, "%d", co2);
-    _co2Canvas->drawRightString(str, _humiCanvas->width(), 0, _scd40OptionFont);
-    _updateImpl(_co2Canvas, _co2CanvasX, _co2CanvasY);
-
-    memset(str, 0, sizeof(str));
-    sprintf(str, "%.2f", temperature);
-    _tempCanvas->drawRightString(str, _humiCanvas->width(), 0, _scd40OptionFont);
-    _updateImpl(_tempCanvas, _tempCanvasX, _tempCanvasY);
-
-    memset(str, 0, sizeof(str));
-    sprintf(str, "%.2f", humidity);
-    _humiCanvas->drawRightString(str, _humiCanvas->width(), 0, _scd40OptionFont);
-    _updateImpl(_humiCanvas, _humiCanvasX, _humiCanvasY);
-}
-
 
 void StatusView::updatePower(uint32_t voltage)
 {
@@ -836,25 +762,25 @@ void StatusView::updateSEN55(
 
 
 void StatusView::displayNetworkStatus(const char *title, const char *msg) {
-    _stautsTitleCanvas1->clear(TFT_WHITE);
-    _stautsMsgCanvas1->clear(TFT_WHITE);
-    _stautsTitleCanvas1->drawCenterString(title, _stautsTitleCanvas1->width() / 2, 0, _statusTitleFont);
-    _stautsMsgCanvas1->drawCenterString(msg, _stautsMsgCanvas1->width() / 2, 0, _statusMsgFont);
+    _statusTitleCanvas1->clear(TFT_WHITE);
+    _statusMsgCanvas1->clear(TFT_WHITE);
+    _statusTitleCanvas1->drawCenterString(title, _statusTitleCanvas1->width() / 2, 0, _statusTitleFont);
+    _statusMsgCanvas1->drawCenterString(msg, _statusMsgCanvas1->width() / 2, 0, _statusMsgFont);
 
-    _updateImpl(_stautsTitleCanvas1, _statusTitleCanvasX, _statusTitleCanvasY);
-    _updateImpl(_stautsMsgCanvas1, _statusMsgCanvasX, _statusMsgCanvasY);
+    _updateImpl(_statusTitleCanvas1, _statusTitleCanvasX, _statusTitleCanvasY);
+    _updateImpl(_statusMsgCanvas1, _statusMsgCanvasX, _statusMsgCanvasY);
     updateNetworkStatus(title, msg);
 }
 
 
 void StatusView::updateNetworkStatus(const char *title, const char *msg) {
-    _stautsTitleCanvas->clear(TFT_WHITE);
-    _stautsMsgCanvas->clear(TFT_WHITE);
-    _stautsTitleCanvas->drawCenterString(title, _stautsTitleCanvas->width() / 2, 0, _statusTitleFont);
-    _stautsMsgCanvas->drawCenterString(msg, _stautsMsgCanvas->width() / 2, 0, _statusMsgFont);
+    _statusTitleCanvas->clear(TFT_WHITE);
+    _statusMsgCanvas->clear(TFT_WHITE);
+    _statusTitleCanvas->drawCenterString(title, _statusTitleCanvas->width() / 2, 0, _statusTitleFont);
+    _statusMsgCanvas->drawCenterString(msg, _statusMsgCanvas->width() / 2, 0, _statusMsgFont);
 
-    _updateImpl(_stautsTitleCanvas, _statusTitleCanvasX, _statusTitleCanvasY);
-    _updateImpl(_stautsMsgCanvas, _statusMsgCanvasX, _statusMsgCanvasY);
+    _updateImpl(_statusTitleCanvas, _statusTitleCanvasX, _statusTitleCanvasY);
+    _updateImpl(_statusMsgCanvas, _statusMsgCanvasX, _statusMsgCanvasY);
 }
 
 
@@ -920,10 +846,6 @@ void StatusView::updateNickname(String &nickname) {
 
 
 void StatusView::load() {
-    _lcd->clear();
-    _lcd->waitDisplay();
-    _lcd->clear(TFT_BLACK);
-    _lcd->waitDisplay();
     _lcd->clear(TFT_WHITE);
     _lcd->waitDisplay();
     _updateImpl(_canvas, 0, 0);
@@ -978,29 +900,89 @@ void StatusView::splitLongString(String &text, int32_t maxWidth, const lgfx::IFo
 
 void StatusView::updateBME688(float temperature, float humidity, float pressure, float gasResistance)
 {
-    char str[8] = { 0 };
+    // Check if canvas objects are properly initialized
+    if (!_bme688TempCanvas || !_bme688HumiCanvas || !_bme688PressCanvas || !_bme688GasCanvas) {
+        log_e("BME688 canvas objects not properly initialized");
+        return;
+    }
 
+    // Use a larger buffer to prevent overflow
+    char str[16] = { 0 };
+
+    // Clear all canvases
     _bme688TempCanvas->clear(TFT_WHITE);
     _bme688HumiCanvas->clear(TFT_WHITE);
     _bme688PressCanvas->clear(TFT_WHITE);
     _bme688GasCanvas->clear(TFT_WHITE);
 
-    sprintf(str, "%.2f", temperature);
-    _bme688TempCanvas->drawRightString(str, _bme688TempCanvas->width(), 0, _bme688OptionFont);
-    _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
+    // Update temperature with bounds checking
+    if (!isnan(temperature) && temperature >= -40.0f && temperature <= 85.0f) {
+        snprintf(str, sizeof(str), "%.2f", temperature);
+        _bme688TempCanvas->drawRightString(str, _bme688TempCanvas->width(), 0, _bme688OptionFont);
+        _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
+    }
 
-    memset(str, 0, sizeof(str));
-    sprintf(str, "%.2f", humidity);
-    _bme688HumiCanvas->drawRightString(str, _bme688HumiCanvas->width(), 0, _bme688OptionFont);
-    _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
+    // Update humidity with bounds checking
+    if (!isnan(humidity) && humidity >= 0.0f && humidity <= 100.0f) {
+        memset(str, 0, sizeof(str));
+        snprintf(str, sizeof(str), "%.2f", humidity);
+        _bme688HumiCanvas->drawRightString(str, _bme688HumiCanvas->width(), 0, _bme688OptionFont);
+        _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
+    }
 
-    memset(str, 0, sizeof(str));
-    sprintf(str, "%.2f", pressure);
-    _bme688PressCanvas->drawRightString(str, _bme688PressCanvas->width(), 0, _bme688OptionFont);
-    _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
+    // Update pressure with bounds checking
+    if (!isnan(pressure) && pressure >= 300.0f && pressure <= 1100.0f) {
+        memset(str, 0, sizeof(str));
+        snprintf(str, sizeof(str), "%.2f", pressure);
+        _bme688PressCanvas->drawRightString(str, _bme688PressCanvas->width(), 0, _bme688OptionFont);
+        _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
+    }
 
-    memset(str, 0, sizeof(str));
-    sprintf(str, "%.2f", gasResistance);
-    _bme688GasCanvas->drawRightString(str, _bme688GasCanvas->width(), 0, _bme688OptionFont);
-    _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+    // Update gas resistance with bounds checking
+    if (!isnan(gasResistance) && gasResistance >= 0.0f && gasResistance <= 100000.0f) {
+        memset(str, 0, sizeof(str));
+        snprintf(str, sizeof(str), "%.2f", gasResistance);
+        _bme688GasCanvas->drawRightString(str, _bme688GasCanvas->width(), 0, _bme688OptionFont);
+        _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+    }
+}
+
+void StatusView::updateSCD40(uint16_t co2, float temperature, float humidity)
+{
+    // Check if canvas objects are properly initialized
+    if (!_co2Canvas || !_tempCanvas || !_humiCanvas) {
+        log_e("SCD40 canvas objects not properly initialized");
+        return;
+    }
+
+    // Use a larger buffer to prevent overflow
+    char str[16] = { 0 };
+
+    // Clear all canvases
+    _co2Canvas->clear(TFT_WHITE);
+    _tempCanvas->clear(TFT_WHITE);
+    _humiCanvas->clear(TFT_WHITE);
+
+    // Update CO2 with bounds checking
+    if (co2 >= 400 && co2 <= 5000) {
+        snprintf(str, sizeof(str), "%d", co2);
+        _co2Canvas->drawRightString(str, _co2Canvas->width(), 0, _scd40OptionFont);
+        _co2Canvas->pushSprite(_co2CanvasX, _co2CanvasY);
+    }
+
+    // Update temperature with bounds checking
+    if (!isnan(temperature) && temperature >= -10.0f && temperature <= 60.0f) {
+        memset(str, 0, sizeof(str));
+        snprintf(str, sizeof(str), "%.2f", temperature);
+        _tempCanvas->drawRightString(str, _tempCanvas->width(), 0, _scd40OptionFont);
+        _tempCanvas->pushSprite(_tempCanvasX, _tempCanvasY);
+    }
+
+    // Update humidity with bounds checking
+    if (!isnan(humidity) && humidity >= 0.0f && humidity <= 100.0f) {
+        memset(str, 0, sizeof(str));
+        snprintf(str, sizeof(str), "%.2f", humidity);
+        _humiCanvas->drawRightString(str, _humiCanvas->width(), 0, _scd40OptionFont);
+        _humiCanvas->pushSprite(_humiCanvasX, _humiCanvasY);
+    }
 }

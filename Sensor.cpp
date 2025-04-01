@@ -116,18 +116,33 @@ void Sensor::getDateString() {
 }
 
 bool Sensor::getBme680MeasurementResult() {
-  log_i("Starting BME688 measurement...");
+    log_i("Starting BME688 measurement...");
+    
+    // Check if sensor is properly initialized
+    if (_bme688.bsecStatus != BSEC_OK || _bme688.bme68xStatus != BME68X_OK) {
+        log_e("BME688 sensor not properly initialized");
+        return false;
+    }
+
     if (_bme688.run()) { // If new data is available
-      log_i("BME 688 measurement successful");
+        log_i("BME 688 measurement successful");
+        
+        // Validate the data before assigning
+        if (isnan(_bme688.temperature) || isnan(_bme688.humidity) || 
+            isnan(_bme688.pressure) || isnan(_bme688.gasResistance)) {
+            log_e("BME688 returned invalid data");
+            return false;
+        }
+
         bme680.temperature = _bme688.temperature;
         bme680.humidity = _bme688.humidity;
-        bme680.pressure = _bme688.pressure;
+        bme680.pressure = _bme688.pressure * 0.0075006; // Convert Pa to mmHg
         bme680.gasResistance = _bme688.gasResistance;
 
         log_i("BME688 Measurement Result:");
         log_i("  Temperature: %f °C", bme680.temperature);
         log_i("  Humidity: %f %RH", bme680.humidity);
-        log_i("  Pressure: %f hPa", bme680.pressure);
+        log_i("  Pressure: %f mmHg", bme680.pressure);
         log_i("  Gas Resistance: %f Ohm", bme680.gasResistance);
         return true;
     }

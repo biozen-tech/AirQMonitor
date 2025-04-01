@@ -4,7 +4,6 @@
 #define USER_BTN_B 8
 
 #define POWER_HOLD 46
-#define BUZZER_PIN 9
 
 #define GROVE_SDA 13
 #define GROVE_SCL 15

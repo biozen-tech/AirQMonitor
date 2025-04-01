@@ -31,9 +31,6 @@ public:
         String loginName;
         String password;
     } ezdata2;
-    struct {
-        bool onoff;
-    } buzzer;
 
     String nickname;
 

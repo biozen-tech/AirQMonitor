@@ -12,7 +12,6 @@ void DataBase::saveToFile() {
     cJSON *rtcObject = NULL;
     cJSON *ntpObject = NULL;
     cJSON *ezdataObject = NULL;
-    cJSON *buzzerObject = NULL;
     File configfile;
     char *str = NULL;
 
@@ -60,13 +59,6 @@ void DataBase::saveToFile() {
     cJSON_AddItemToObject(configObject, "ezdata2", ezdataObject);
     cJSON_AddStringToObject(ezdataObject, "dev_token", ezdata2.devToken.c_str());
 
-    buzzerObject = cJSON_CreateObject();
-    if (buzzerObject == NULL) {
-        goto OUT;
-    }
-    cJSON_AddItemToObject(configObject, "buzzer", buzzerObject);
-    cJSON_AddBoolToObject(buzzerObject, "mute", buzzer.onoff);
-
     cJSON_AddStringToObject(configObject, "nickname", nickname.c_str());
 
     configfile = FILESYSTEM.open("/db.json", FILE_WRITE);
@@ -82,7 +74,7 @@ OUT:
 
 
 void DataBase::dump() {
-    log_d("config:");
+    log_d("=== DataBase dump ===");
     log_d("  factory_state: %d", factoryState);
 
     log_d("  wifi:");
@@ -99,10 +91,6 @@ void DataBase::dump() {
 
     log_d("  ezdata2:");
     log_d("    dev_token: %s", ezdata2.devToken.c_str());
-
-    log_d("  buzzer:");
-    log_d("    onoff: %d", buzzer.onoff);
-
     log_d("  nickname: %s", nickname.c_str());
     log_d("  isFactoryTestMode: %d", isFactoryTestMode);
 }
@@ -157,12 +145,6 @@ void DataBase::loadFromFile(void) {
     cJSON *tokenObject = cJSON_GetObjectItem(ezdataObject, "dev_token");
     ezdata2.devToken = String(tokenObject->valuestring);
 
-    cJSON *buzzerObject = cJSON_GetObjectItem(configObject, "buzzer");
-    if (cJSON_IsTrue(cJSON_GetObjectItem(buzzerObject, "mute"))) {
-        buzzer.onoff = true;
-    } else {
-        buzzer.onoff = false;
-    }
 
     cJSON *nicknameObject = cJSON_GetObjectItem(configObject, "nickname");
     if (nicknameObject) {

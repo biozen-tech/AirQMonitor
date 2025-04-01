@@ -7,6 +7,7 @@
 
 #include <SensirionI2CScd4x.h>
 #include <SensirionI2CSen5x.h>
+#include <Bsec.h>
 
 #include "config.h"
 #include "DataBase.hpp"
@@ -17,6 +18,7 @@ bool webServerState = false;
 
 extern SensirionI2CScd4x scd4x;
 extern SensirionI2CSen5x sen5x;
+extern Bsec bme688;
 
 static void postWiFiConnect();
 static void getWiFiStatus();
@@ -30,14 +32,20 @@ static void postAPControl();
 static void webTask(void *);
 
 static bool getSCD40MeasurementResult(SensirionI2CScd4x& scd4x, uint16_t& co2, float& temperature, float& humidity);
+static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, float& gasResistance);
 
 void appWebServer(void) {
+    log_i("=== Starting Web Server Setup ===");
+    
     if (webServerState == true) {
+        log_w("Web server already running");
         return;
     }
-    server.serveStatic("/", FILESYSTEM, "/www/index.html");
-    // onServeStatic("/www");
 
+    log_i("Setting up static file serving");
+    server.serveStatic("/", FILESYSTEM, "/www/index.html");
+
+    log_i("Registering API endpoints");
     server.on("/api/v1/wifi_connect", HTTP_POST, postWiFiConnect);
     server.on("/api/v1/wifi_status", HTTP_GET, getWiFiStatus);
     server.on("/api/v1/wifi_list", HTTP_GET, getWiFiList);
@@ -47,34 +55,55 @@ void appWebServer(void) {
     server.on("/api/v1/config", HTTP_GET, getConfig);
     server.on("/api/v1/config", HTTP_POST, postConfig);
     server.on("/api/v1/ap_control", HTTP_POST, postAPControl);
-    // called when the url is not defined here
+
     server.onNotFound([]() {
+        log_w("404 Not Found: %s", server.uri().c_str());
         server.send(404, "text/plain", "FileNotFound");
     });
 
+    log_i("Starting web server");
     server.begin();
     webServerState = true;
-    log_i("HTTP server started");
-    xTaskCreatePinnedToCore(webTask, "webTask", 8192, NULL, 5, &webTaskHandler, APP_CPU_NUM);
+    
+    log_i("Creating web server task");
+    if (xTaskCreatePinnedToCore(webTask, "webTask", 8192, NULL, 5, &webTaskHandler, APP_CPU_NUM) != pdPASS) {
+        log_e("Failed to create web server task");
+        webServerState = false;
+        return;
+    }
+    
+    log_i("=== Web Server Setup Complete ===");
 }
-
 
 void appWebServerClose(void) {
+    log_i("=== Shutting Down Web Server ===");
+    
+    if (!webServerState) {
+        log_w("Web server not running");
+        return;
+    }
+
+    log_i("Closing server connection");
     server.close();
     webServerState = false;
+    
+    log_i("Deleting web server task");
     vTaskDelete(webTaskHandler);
+    
+    log_i("=== Web Server Shutdown Complete ===");
 }
 
-
-
 static void webTask(void *) {
+    log_i("Web server task started");
+    
     for (;;) {
         server.handleClient();
         delay(10);
     }
+    
+    log_i("Web server task ended");
     vTaskDelete(NULL);
 }
-
 
 static void postWiFiConnect() {
     cJSON *reqObject = NULL;
@@ -120,7 +149,6 @@ static void postWiFiConnect() {
     return;
 }
 
-
 static void getWiFiStatus() {
     cJSON *rspObject = NULL;
     char *str = NULL;
@@ -148,7 +176,6 @@ static void getWiFiStatus() {
     cJSON_Delete(rspObject);
     return;
 }
-
 
 static void getWiFiList() {
     cJSON *rspObject = NULL;
@@ -183,7 +210,6 @@ OUT:
     return ;
 }
 
-
 static void postEzDataConfig() {
     cJSON *reqObject = NULL;
     cJSON *ezdataObject = NULL;
@@ -215,11 +241,11 @@ static void postEzDataConfig() {
     return;
 }
 
-
 static void getStatus() {
     cJSON *rspObject = NULL;
     cJSON *sen55Object = NULL;
     cJSON *scd40Object = NULL;
+    cJSON *bme688Object = NULL;
     char *str = NULL;
 
     rspObject = cJSON_CreateObject();
@@ -231,6 +257,7 @@ static void getStatus() {
     if (sen55Object == NULL) {
         goto OUT;
     }
+
     float massConcentrationPm1p0;
     float massConcentrationPm2p5;
     float massConcentrationPm4p0;
@@ -239,6 +266,7 @@ static void getStatus() {
     float ambientTemperature;
     float vocIndex;
     float noxIndex;
+
     sen5x.readMeasuredValues(
         massConcentrationPm1p0,
         massConcentrationPm2p5,
@@ -272,6 +300,18 @@ static void getStatus() {
     cJSON_AddNumberToObject(scd40Object, "humidity", humidity);
     cJSON_AddNumberToObject(scd40Object, "temperature", temperature);
 
+    bme688Object = cJSON_CreateObject();
+    if (bme688Object == NULL) {
+        goto OUT;
+    }
+    float bme688Temp, bme688Humi, bme688Press, bme688Gas;
+    getBME688MeasurementResult(bme688, bme688Temp, bme688Humi, bme688Press, bme688Gas);
+    cJSON_AddItemToObject(rspObject, "bme688", bme688Object);
+    cJSON_AddNumberToObject(bme688Object, "temperature", bme688Temp);
+    cJSON_AddNumberToObject(bme688Object, "humidity", bme688Humi);
+    cJSON_AddNumberToObject(bme688Object, "pressure", bme688Press);
+    cJSON_AddNumberToObject(bme688Object, "gasResistance", bme688Gas);
+
     struct tm timeinfo;
     getLocalTime(&timeinfo, 1000);
     cJSON_AddStringToObject(rspObject, "time", asctime((const struct tm *)&timeinfo));
@@ -286,7 +326,6 @@ OUT:
 OUT1:
     return;
 }
-
 
 static void getInfo() {
     cJSON *rspObject = NULL;
@@ -375,7 +414,6 @@ OUT1:
     return;
 }
 
-
 static void getConfig() {
     File file = FILESYSTEM.open("/db.json", "r");
     server.streamFile(file, "application/json");
@@ -384,9 +422,7 @@ static void getConfig() {
     return;
 }
 
-
 static void postConfig() {
-
     cJSON *reqObject = NULL;
     cJSON *configObject = NULL;
     cJSON *wifiObject = NULL;
@@ -488,7 +524,6 @@ static void postConfig() {
     return;
 }
 
-
 static void postAPControl() {
     cJSON *rspObject = NULL;
     char *str = NULL;
@@ -514,36 +549,38 @@ static void postAPControl() {
     return;
 }
 
-
-static bool getSCD40MeasurementResult(SensirionI2CScd4x& scd4x, uint16_t& co2, float& temperature, float& humidity)
-{
-    char _errorMessage[256];
-
-    bool isDataReady = false;
-    uint16_t error = scd4x.getDataReadyFlag(isDataReady);
-    if (error) {
-        errorToString(error, _errorMessage, 256);
-        log_w("Error trying to execute getDataReadyFlag(): %s", _errorMessage);
-        return false;
-    }
-    if (!isDataReady) {
-        return false;
-    }
-
+static bool getSCD40MeasurementResult(SensirionI2CScd4x& scd4x, uint16_t& co2, float& temperature, float& humidity) {
+    log_d("Getting SCD40 measurement");
+    
+    uint16_t error;
+    char errorMessage[256];
+    
     error = scd4x.readMeasurement(co2, temperature, humidity);
     if (error) {
-        errorToString(error, _errorMessage, 256);
-        log_w("Error trying to execute readMeasurement(): %s", _errorMessage);
+        errorToString(error, errorMessage, 256);
+        log_e("Error reading SCD40 measurement: %s", errorMessage);
         return false;
-    } else if (co2 == 0) {
-        log_w("Invalid sample detected, skipping.");
-        return false;
-    } else {
-        log_i("SCD40 Measurement Result:");
-        log_i("  Co2: %d ppm",co2 );
-        log_i("  Temperature: %f °C", temperature);
-        log_i("  Humidity: %f %RH", humidity);
-        return true;
     }
-    return false;
+    
+    log_d("SCD40 measurement successful - CO2: %d, Temp: %.2f, Humidity: %.2f", 
+          co2, temperature, humidity);
+    return true;
+}
+
+static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, float& gasResistance) {
+    log_d("Getting BME688 measurement");
+    
+    if (bme688.run()) {
+        temperature = bme688.temperature;
+        humidity = bme688.humidity;
+        pressure = bme688.pressure;
+        gasResistance = bme688.gasResistance;
+        
+        log_d("BME688 measurement successful - Temp: %.2f, Humidity: %.2f, Pressure: %.2f, Gas: %.2f",
+              temperature, humidity, pressure, gasResistance);
+        return true;
+    } else {
+        log_e("BME688 measurement failed");
+        return false;
+    }
 }

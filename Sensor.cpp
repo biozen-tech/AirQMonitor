@@ -114,3 +114,23 @@ void Sensor::getDateString() {
     _bm8563.getDate(&date);
     sprintf(this->time.date, "%04d-%02d-%02d", date.year, date.month, date.date);
 }
+
+bool Sensor::getBme680MeasurementResult() {
+  log_i("Starting BME688 measurement...");
+    if (_bme688.run()) { // If new data is available
+      log_i("BME 688 measurement successful");
+        bme680.temperature = _bme688.temperature;
+        bme680.humidity = _bme688.humidity;
+        bme680.pressure = _bme688.pressure;
+        bme680.gasResistance = _bme688.gasResistance;
+
+        log_i("BME688 Measurement Result:");
+        log_i("  Temperature: %f °C", bme680.temperature);
+        log_i("  Humidity: %f %RH", bme680.humidity);
+        log_i("  Pressure: %f hPa", bme680.pressure);
+        log_i("  Gas Resistance: %f Ohm", bme680.gasResistance);
+        return true;
+    }
+      log_i("BME 688 measurement unsuccessful");
+    return false;
+}

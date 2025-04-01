@@ -13,7 +13,6 @@ StatusView::~StatusView() {}
 
 
 void StatusView::begin() {
-
     _canvas->createSprite(_lcd->width(), _lcd->height());
     _canvas->setBaseColor(TFT_BLACK);
     _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
@@ -23,6 +22,7 @@ void StatusView::begin() {
     initSCD40();
     initPower();
     initSEN55();
+    initBME688();
     initStatus();
 }
 
@@ -541,6 +541,116 @@ void StatusView::initSEN55()
     _noxCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 }
 
+void StatusView::initBME688()
+{
+    int32_t tempX = 0;
+    int32_t tempY = 0;
+    int32_t tempW = 0;
+    int32_t tempH = 0;
+
+    tempW = 97;
+
+    tempH = _border
+            + _padding
+            + _canvas->fontHeight(_bme688TitleFont)
+            + _padding
+            + _canvas->fontHeight(_bme688OptionFont)
+            + _padding
+            + _canvas->fontHeight(_bme688OptionFont)
+            + _padding
+            + _canvas->fontHeight(_bme688OptionFont)
+            + _padding
+            + _canvas->fontHeight(_bme688OptionFont)
+            + _padding
+            + _border;
+
+    log_d("BME688 width: %d px", tempW);
+    log_d("BME688 height: %d px", tempH);
+
+    // button div
+    tempX = _bme688BaseCursorX;
+    tempY = _bme688BaseCursorY;
+    _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
+    // Padding: 2px
+    tempX = tempX + _border + _padding;
+    tempY = tempY + _border + _padding;
+    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_bme688TitleFont), TFT_BLACK);
+    // 5px
+    tempX = tempX + 5 + 2;
+    _canvas->drawString("BME688", tempX, tempY, _bme688TitleFont);
+
+    // Temperature
+    tempX = _bme688BaseCursorX + _border + _padding;
+    tempY = tempY + _canvas->fontHeight(_bme688TitleFont) + _padding;
+    _canvas->drawString("Temp", tempX, tempY, _bme688OptionFont);
+
+    tempX = _bme688BaseCursorX + tempW - 2;
+    _canvas->drawRightString("n/a", tempX, tempY, _bme688OptionFont);
+    _bme688TempCanvasX = tempX - _canvas->textWidth("00000", _bme688OptionFont);
+    _bme688TempCanvasY = tempY;
+
+    // Humidity
+    tempX = _bme688BaseCursorX + _border + _padding;
+    tempY = tempY + _canvas->fontHeight(_bme688OptionFont) + _padding;
+    _canvas->drawString("RH", tempX, tempY, _bme688OptionFont);
+
+    tempX = _bme688BaseCursorX + tempW - 2;
+    _canvas->drawRightString("n/a", tempX, tempY, _bme688OptionFont);
+    _bme688HumiCanvasX = tempX - _canvas->textWidth("00000", _bme688OptionFont);
+    _bme688HumiCanvasY = tempY;
+
+    // Pressure
+    tempX = _bme688BaseCursorX + _border + _padding;
+    tempY = tempY + _canvas->fontHeight(_bme688OptionFont) + _padding;
+    _canvas->drawString("Press", tempX, tempY, _bme688OptionFont);
+
+    tempX = _bme688BaseCursorX + tempW - 2;
+    _canvas->drawRightString("n/a", tempX, tempY, _bme688OptionFont);
+    _bme688PressCanvasX = tempX - _canvas->textWidth("00000", _bme688OptionFont);
+    _bme688PressCanvasY = tempY;
+
+    // Gas Resistance
+    tempX = _bme688BaseCursorX + _border + _padding;
+    tempY = tempY + _canvas->fontHeight(_bme688OptionFont) + _padding;
+    _canvas->drawString("Gas", tempX, tempY, _bme688OptionFont);
+
+    tempX = _bme688BaseCursorX + tempW - 2;
+    _canvas->drawRightString("n/a", tempX, tempY, _bme688OptionFont);
+    _bme688GasCanvasX = tempX - _canvas->textWidth("00000", _bme688OptionFont);
+    _bme688GasCanvasY = tempY;
+
+    _bme688TempCanvas = new M5Canvas(_canvas);
+    _bme688TempCanvas->createSprite(
+        _bme688TempCanvas->textWidth("00000", _bme688OptionFont),
+        _bme688TempCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688TempCanvas->setBaseColor(TFT_WHITE);
+    _bme688TempCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+
+    _bme688HumiCanvas = new M5Canvas(_canvas);
+    _bme688HumiCanvas->createSprite(
+        _bme688HumiCanvas->textWidth("00000", _bme688OptionFont),
+        _bme688HumiCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688HumiCanvas->setBaseColor(TFT_WHITE);
+    _bme688HumiCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+
+    _bme688PressCanvas = new M5Canvas(_canvas);
+    _bme688PressCanvas->createSprite(
+        _bme688PressCanvas->textWidth("00000", _bme688OptionFont),
+        _bme688PressCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688PressCanvas->setBaseColor(TFT_WHITE);
+    _bme688PressCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+
+    _bme688GasCanvas = new M5Canvas(_canvas);
+    _bme688GasCanvas->createSprite(
+        _bme688GasCanvas->textWidth("00000", _bme688OptionFont),
+        _bme688GasCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688GasCanvas->setBaseColor(TFT_WHITE);
+    _bme688GasCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+}
 
 void StatusView::updateTime(const char *time, const char *date)
 {
@@ -864,4 +974,33 @@ void StatusView::splitLongString(String &text, int32_t maxWidth, const lgfx::IFo
 
     text = text.substring(0, end) + "..." + text.substring(start);
     log_d("%s", text.c_str());
+}
+
+void StatusView::updateBME688(float temperature, float humidity, float pressure, float gasResistance)
+{
+    char str[8] = { 0 };
+
+    _bme688TempCanvas->clear(TFT_WHITE);
+    _bme688HumiCanvas->clear(TFT_WHITE);
+    _bme688PressCanvas->clear(TFT_WHITE);
+    _bme688GasCanvas->clear(TFT_WHITE);
+
+    sprintf(str, "%.2f", temperature);
+    _bme688TempCanvas->drawRightString(str, _bme688TempCanvas->width(), 0, _bme688OptionFont);
+    _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
+
+    memset(str, 0, sizeof(str));
+    sprintf(str, "%.2f", humidity);
+    _bme688HumiCanvas->drawRightString(str, _bme688HumiCanvas->width(), 0, _bme688OptionFont);
+    _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
+
+    memset(str, 0, sizeof(str));
+    sprintf(str, "%.2f", pressure);
+    _bme688PressCanvas->drawRightString(str, _bme688PressCanvas->width(), 0, _bme688OptionFont);
+    _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
+
+    memset(str, 0, sizeof(str));
+    sprintf(str, "%.2f", gasResistance);
+    _bme688GasCanvas->drawRightString(str, _bme688GasCanvas->width(), 0, _bme688OptionFont);
+    _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
 }

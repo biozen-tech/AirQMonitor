@@ -27,6 +27,7 @@ public:
         float vocIndex,
         float noxIndex
     );
+    void updateBME688(float temperature, float humidity, float pressure, float gasResistance);
     void updateNetworkStatus(const char *title, const char *msg);
     void displayNetworkStatus(const char *title, const char *msg);
     void updateNickname(String &nickname);
@@ -131,6 +132,29 @@ private:
     int32_t _noxCanvasX;
     int32_t _noxCanvasY;
 
+    // bme688
+    const lgfx::IFont* _bme688TitleFont = &fonts::FreeSansBold9pt7b;
+    const lgfx::IFont* _bme688OptionFont = &fonts::DejaVu12;
+
+    int32_t _bme688BaseCursorX = 2 + 97 + 2;
+    int32_t _bme688BaseCursorY = 2 + 144 + 2;
+
+    M5Canvas *_bme688TempCanvas;
+    int32_t _bme688TempCanvasX;
+    int32_t _bme688TempCanvasY;
+
+    M5Canvas *_bme688HumiCanvas;
+    int32_t _bme688HumiCanvasX;
+    int32_t _bme688HumiCanvasY;
+
+    M5Canvas *_bme688PressCanvas;
+    int32_t _bme688PressCanvasX;
+    int32_t _bme688PressCanvasY;
+
+    M5Canvas *_bme688GasCanvas;
+    int32_t _bme688GasCanvasX;
+    int32_t _bme688GasCanvasY;
+
     // status
     const lgfx::IFont* _statusTitleFont = &fonts::DejaVu18;
     const lgfx::IFont* _statusMsgFont = &fonts::DejaVu18;
@@ -157,6 +181,7 @@ private:
     void initPower();
     void initLOGO();
     void initSEN55();
+    void initBME688();
     void initStatus();
     void splitLongString(String &text, int32_t maxWidth, const lgfx::IFont* font);
     void setNicknameFont(String &text, int32_t maxWidth);

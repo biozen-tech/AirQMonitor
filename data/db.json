@@ -2,8 +2,8 @@
     "config": {
         "factory_state": true,
         "wifi": {
-            "ssid": "",
-            "password": ""
+            "ssid": "Iot",
+            "password": "Healeb!@#6413"
         },
         "rtc": {
             "sleep_interval": 60
@@ -19,6 +19,6 @@
         "buzzer": {
             "mute": true
         },
-        "nickname": "AirQAirQ"
+        "nickname": "Biozen AirQ"
     }
 }

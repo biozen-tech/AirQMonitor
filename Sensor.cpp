@@ -117,7 +117,7 @@ void Sensor::getDateString() {
 
 bool Sensor::getBme680MeasurementResult() {
     log_i("Starting BME688 measurement...");
-    
+
     // Check if sensor is properly initialized
     if (_bme688.bsecStatus != BSEC_OK || _bme688.bme68xStatus != BME68X_OK) {
         log_e("BME688 sensor not properly initialized");
@@ -126,26 +126,45 @@ bool Sensor::getBme680MeasurementResult() {
 
     if (_bme688.run()) { // If new data is available
         log_i("BME 688 measurement successful");
-        
-        // Validate the data before assigning
+
+        // Validate the basic data before assigning
         if (isnan(_bme688.temperature) || isnan(_bme688.humidity) || 
             isnan(_bme688.pressure) || isnan(_bme688.gasResistance)) {
-            log_e("BME688 returned invalid data");
+            log_e("BME688 returned invalid basic data");
             return false;
         }
 
+        // Assign basic measurements
         bme680.temperature = _bme688.temperature;
         bme680.humidity = _bme688.humidity;
         bme680.pressure = _bme688.pressure * 0.0075006; // Convert Pa to mmHg
         bme680.gasResistance = _bme688.gasResistance;
 
+        // Assign additional measurements with validation
+        bme680.iaq = _bme688.iaq;
+        bme680.staticIaq = _bme688.staticIaq;
+        bme680.co2Equivalent = _bme688.co2Equivalent;
+        bme680.breathVocEquivalent = _bme688.breathVocEquivalent;
+        bme680.gasPercentage = _bme688.gasPercentage;
+        bme680.iaqAccuracy = _bme688.iaqAccuracy;
+        bme680.stabStatus = _bme688.stabStatus;
+        bme680.runInStatus = _bme688.runInStatus;
+
+        // Log all measurements
         log_i("BME688 Measurement Result:");
         log_i("  Temperature: %f °C", bme680.temperature);
         log_i("  Humidity: %f %RH", bme680.humidity);
         log_i("  Pressure: %f mmHg", bme680.pressure);
         log_i("  Gas Resistance: %f Ohm", bme680.gasResistance);
+        log_i("  IAQ: %f (Accuracy: %d)", bme680.iaq, bme680.iaqAccuracy);
+        log_i("  Static IAQ: %f", bme680.staticIaq);
+        log_i("  CO2 Equivalent: %f ppm", bme680.co2Equivalent);
+        log_i("  Breath VOC Equivalent: %f ppm", bme680.breathVocEquivalent);
+        log_i("  Gas Percentage: %f %%", bme680.gasPercentage);
+        log_i("  Stabilization Status: %d", bme680.stabStatus);
+        log_i("  Run-in Status: %d", bme680.runInStatus);
         return true;
     }
-      log_i("BME 688 measurement unsuccessful");
+    log_i("BME 688 measurement unsuccessful");
     return false;
 }

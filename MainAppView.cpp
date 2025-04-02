@@ -10,14 +10,14 @@ StatusView::StatusView(LGFX_Device *lcd, M5Canvas *canvas) {
     _canvas = canvas;
 
     // Initialize column width and cursor positions with fixed LCD dimensions
-    _columnWidth = 98;  // (200 - 4) / 2 = 98 for each column
+    _columnWidth = 96;  // (200 - 4) / 2 = 98 for each column
     log_i("Initialized column width: %ld", _columnWidth);
 
     // Set right column positions
     _bme688BaseCursorX = 2;    // Start at left column
-    _bme688BaseCursorY = 2 + 69 + 2;  // Position below SCD40 section
+    _bme688BaseCursorY = 2 + 65 + 2;  // Position below SCD40 section
     _powerBaseCursorX = 100;   // Start at right column (200/2)
-    _powerBaseCursorY = 2 + 69 + 2;  // Position below SEN55 section
+    _powerBaseCursorY = 2 + 135 + 2;  // Position below SEN55 section
     log_i("Initialized cursor positions - BME688: (%ld, %ld), Power: (%ld, %ld)", 
          _bme688BaseCursorX, _bme688BaseCursorY, _powerBaseCursorX, _powerBaseCursorY);
 }
@@ -590,7 +590,7 @@ void StatusView::initBME688()
 {
     log_i("Initializing BME688 section");
     int32_t tempW = _columnWidth;
-    int32_t tempH = 69;
+    int32_t tempH = 110; // Increased height to accommodate two more values
     int32_t tempX = _bme688BaseCursorX;
     int32_t tempY = _bme688BaseCursorY;
 
@@ -617,9 +617,12 @@ void StatusView::initBME688()
     _bme688HumiCanvas = new M5Canvas(_canvas);
     _bme688PressCanvas = new M5Canvas(_canvas);
     _bme688GasCanvas = new M5Canvas(_canvas);
+    _bme688IaqCanvas = new M5Canvas(_canvas);
+    _bme688Co2EqCanvas = new M5Canvas(_canvas);
 
-    log_i("BME688 canvas objects created - Temp: %p, Humi: %p, Press: %p, Gas: %p",
-          _bme688TempCanvas, _bme688HumiCanvas, _bme688PressCanvas, _bme688GasCanvas);
+    log_i("BME688 canvas objects created - Temp: %p, Humi: %p, Press: %p, Gas: %p, IAQ: %p, CO2Eq: %p",
+          _bme688TempCanvas, _bme688HumiCanvas, _bme688PressCanvas, _bme688GasCanvas, 
+          _bme688IaqCanvas, _bme688Co2EqCanvas);
 
     // Initialize each canvas with smaller dimensions for just the values
     log_i("Creating BME688 sprites");
@@ -627,6 +630,8 @@ void StatusView::initBME688()
     _bme688HumiCanvas->createSprite(40, 12);
     _bme688PressCanvas->createSprite(40, 12);
     _bme688GasCanvas->createSprite(40, 12);
+    _bme688IaqCanvas->createSprite(40, 12);
+    _bme688Co2EqCanvas->createSprite(40, 12);
 
     log_i("BME688 sprites created successfully");
 
@@ -652,6 +657,16 @@ void StatusView::initBME688()
     _bme688GasCanvas->setTextDatum(TL_DATUM);
     _bme688GasCanvas->setTextSize(1);
 
+    _bme688IaqCanvas->setBaseColor(TFT_WHITE);
+    _bme688IaqCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+    _bme688IaqCanvas->setTextDatum(TL_DATUM);
+    _bme688IaqCanvas->setTextSize(1);
+
+    _bme688Co2EqCanvas->setBaseColor(TFT_WHITE);
+    _bme688Co2EqCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+    _bme688Co2EqCanvas->setTextDatum(TL_DATUM);
+    _bme688Co2EqCanvas->setTextSize(1);
+
     log_i("BME688 canvas properties set successfully");
 
     // Draw labels on the main canvas
@@ -662,6 +677,8 @@ void StatusView::initBME688()
     _canvas->drawString("Humi:", labelX, labelY + 15);
     _canvas->drawString("Press:", labelX, labelY + 30);
     _canvas->drawString("Gas:", labelX, labelY + 45);
+    _canvas->drawString("IAQ:", labelX, labelY + 60);
+    _canvas->drawString("CO2eq:", labelX, labelY + 75);
 
     // Store positions for value updates
     _bme688TempCanvasX = labelX + 45;  // Position after labels
@@ -672,6 +689,10 @@ void StatusView::initBME688()
     _bme688PressCanvasY = labelY + 30;
     _bme688GasCanvasX = labelX + 45;
     _bme688GasCanvasY = labelY + 45;
+    _bme688IaqCanvasX = labelX + 45;
+    _bme688IaqCanvasY = labelY + 60;
+    _bme688Co2EqCanvasX = labelX + 45;
+    _bme688Co2EqCanvasY = labelY + 75;
 
     // Draw initial values
     _bme688TempCanvas->fillSprite(TFT_WHITE);
@@ -689,6 +710,14 @@ void StatusView::initBME688()
     _bme688GasCanvas->fillSprite(TFT_WHITE);
     _bme688GasCanvas->drawString("0.0", 0, 0);
     _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+
+    _bme688IaqCanvas->fillSprite(TFT_WHITE);
+    _bme688IaqCanvas->drawString("0.0", 0, 0);
+    _bme688IaqCanvas->pushSprite(_bme688IaqCanvasX, _bme688IaqCanvasY);
+
+    _bme688Co2EqCanvas->fillSprite(TFT_WHITE);
+    _bme688Co2EqCanvas->drawString("0.0", 0, 0);
+    _bme688Co2EqCanvas->pushSprite(_bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
 
     log_i("BME688 section initialized successfully");
 }
@@ -1077,14 +1106,16 @@ void StatusView::splitLongString(String &text, int32_t maxWidth, const lgfx::IFo
     log_i("Split string result: %s", text.c_str());
 }
 
-void StatusView::updateBME688(float temperature, float humidity, float pressure, float gasResistance) {
-    log_i("Starting BME688 update with values - Temp: %.2f, Humi: %.2f, Press: %.2f, Gas: %.2f",
-          temperature, humidity, pressure, gasResistance);
+void StatusView::updateBME688(float temperature, float humidity, float pressure, float gasResistance, float iaq, float co2Equivalent) {
+    log_i("Starting BME688 update with values - Temp: %.2f, Humi: %.2f, Press: %.2f, Gas: %.2f, IAQ: %.2f, CO2eq: %.2f",
+          temperature, humidity, pressure, gasResistance, iaq, co2Equivalent);
 
     // Check if canvas objects are properly initialized
-    if (!_bme688TempCanvas || !_bme688HumiCanvas || !_bme688PressCanvas || !_bme688GasCanvas) {
-        log_e("BME688 canvas objects not initialized - Temp: %p, Humi: %p, Press: %p, Gas: %p",
-              _bme688TempCanvas, _bme688HumiCanvas, _bme688PressCanvas, _bme688GasCanvas);
+    if (!_bme688TempCanvas || !_bme688HumiCanvas || !_bme688PressCanvas || !_bme688GasCanvas || 
+        !_bme688IaqCanvas || !_bme688Co2EqCanvas) {
+        log_e("BME688 canvas objects not initialized - Temp: %p, Humi: %p, Press: %p, Gas: %p, IAQ: %p, CO2eq: %p",
+              _bme688TempCanvas, _bme688HumiCanvas, _bme688PressCanvas, _bme688GasCanvas,
+              _bme688IaqCanvas, _bme688Co2EqCanvas);
         return;
     }
 
@@ -1112,6 +1143,16 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     // Bounds checking for gas resistance - log warning but don't return
     if (gasResistance < 0.0f || gasResistance > 100000.0f) {
         log_w("Gas resistance out of bounds: %.2f", gasResistance);
+    }
+
+    // Bounds checking for IAQ - log warning but don't return
+    if (iaq < 0.0f || iaq > 500.0f) {
+        log_w("IAQ out of bounds: %.2f", iaq);
+    }
+
+    // Bounds checking for CO2 equivalent - log warning but don't return
+    if (co2Equivalent < 0.0f || co2Equivalent > 10000.0f) {
+        log_w("CO2 equivalent out of bounds: %.2f", co2Equivalent);
     }
 
     char str[16] = { 0 };
@@ -1147,6 +1188,22 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     _bme688GasCanvas->drawString(str, 0, 0, _bme688OptionFont);
     log_i("Pushing gas resistance canvas to display at (%ld, %ld)", _bme688GasCanvasX, _bme688GasCanvasY);
     _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+
+    // Update IAQ display
+    log_i("Updating IAQ display");
+    _bme688IaqCanvas->fillSprite(TFT_WHITE);
+    snprintf(str, sizeof(str), "%.1f", iaq);
+    _bme688IaqCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    log_i("Pushing IAQ canvas to display at (%ld, %ld)", _bme688IaqCanvasX, _bme688IaqCanvasY);
+    _bme688IaqCanvas->pushSprite(_bme688IaqCanvasX, _bme688IaqCanvasY);
+
+    // Update CO2 equivalent display
+    log_i("Updating CO2 equivalent display");
+    _bme688Co2EqCanvas->fillSprite(TFT_WHITE);
+    snprintf(str, sizeof(str), "%.1f", co2Equivalent);
+    _bme688Co2EqCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    log_i("Pushing CO2 equivalent canvas to display at (%ld, %ld)", _bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
+    _bme688Co2EqCanvas->pushSprite(_bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
 
     log_i("BME688 update completed successfully");
 }

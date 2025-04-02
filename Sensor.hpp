@@ -47,6 +47,14 @@ public:
         float humidity;
         float pressure;
         float gasResistance;
+        float iaq;                    // Indoor Air Quality
+        float staticIaq;              // Static Indoor Air Quality
+        float co2Equivalent;          // CO2 equivalent
+        float breathVocEquivalent;    // Breath VOC equivalent
+        float gasPercentage;          // Gas percentage
+        uint8_t iaqAccuracy;          // IAQ accuracy
+        uint8_t stabStatus;           // Stabilization status
+        uint8_t runInStatus;          // Run-in status
     } bme680;
 
     struct {

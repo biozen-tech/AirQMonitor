@@ -32,11 +32,14 @@ static void postAPControl();
 static void webTask(void *);
 
 static bool getSCD40MeasurementResult(SensirionI2CScd4x& scd4x, uint16_t& co2, float& temperature, float& humidity);
-static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, float& gasResistance);
+static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, 
+                                  float& gasResistance, float& iaq, float& staticIaq, float& co2Equivalent,
+                                  float& breathVocEquivalent, float& gasPercentage, uint8_t& iaqAccuracy,
+                                  uint8_t& stabStatus, uint8_t& runInStatus);
 
 void appWebServer(void) {
     log_i("=== Starting Web Server Setup ===");
-    
+
     if (webServerState == true) {
         log_w("Web server already running");
         return;
@@ -64,20 +67,20 @@ void appWebServer(void) {
     log_i("Starting web server");
     server.begin();
     webServerState = true;
-    
+
     log_i("Creating web server task");
     if (xTaskCreatePinnedToCore(webTask, "webTask", 8192, NULL, 5, &webTaskHandler, APP_CPU_NUM) != pdPASS) {
         log_e("Failed to create web server task");
         webServerState = false;
         return;
     }
-    
+
     log_i("=== Web Server Setup Complete ===");
 }
 
 void appWebServerClose(void) {
     log_i("=== Shutting Down Web Server ===");
-    
+
     if (!webServerState) {
         log_w("Web server not running");
         return;
@@ -86,21 +89,21 @@ void appWebServerClose(void) {
     log_i("Closing server connection");
     server.close();
     webServerState = false;
-    
+
     log_i("Deleting web server task");
     vTaskDelete(webTaskHandler);
-    
+
     log_i("=== Web Server Shutdown Complete ===");
 }
 
 static void webTask(void *) {
     log_i("Web server task started");
-    
+
     for (;;) {
         server.handleClient();
         delay(10);
     }
-    
+
     log_i("Web server task ended");
     vTaskDelete(NULL);
 }
@@ -305,12 +308,30 @@ static void getStatus() {
         goto OUT;
     }
     float bme688Temp, bme688Humi, bme688Press, bme688Gas;
-    getBME688MeasurementResult(bme688, bme688Temp, bme688Humi, bme688Press, bme688Gas);
+    float bme688Iaq, bme688StaticIaq, bme688Co2Eq, bme688BreathVoc, bme688GasPercentage;
+    uint8_t bme688IaqAccuracy, bme688StabStatus, bme688RunInStatus;
+
+    getBME688MeasurementResult(bme688, bme688Temp, bme688Humi, bme688Press, bme688Gas,
+                              bme688Iaq, bme688StaticIaq, bme688Co2Eq, bme688BreathVoc,
+                              bme688GasPercentage, bme688IaqAccuracy, bme688StabStatus, bme688RunInStatus);
+
     cJSON_AddItemToObject(rspObject, "bme688", bme688Object);
+
+    // Add basic measurements
     cJSON_AddNumberToObject(bme688Object, "temperature", bme688Temp);
     cJSON_AddNumberToObject(bme688Object, "humidity", bme688Humi);
     cJSON_AddNumberToObject(bme688Object, "pressure", bme688Press);
     cJSON_AddNumberToObject(bme688Object, "gasResistance", bme688Gas);
+
+    // Add additional measurements
+    cJSON_AddNumberToObject(bme688Object, "iaq", bme688Iaq);
+    cJSON_AddNumberToObject(bme688Object, "iaq_accuracy", bme688IaqAccuracy);
+    cJSON_AddNumberToObject(bme688Object, "static_iaq", bme688StaticIaq);
+    cJSON_AddNumberToObject(bme688Object, "co2_equivalent", bme688Co2Eq);
+    cJSON_AddNumberToObject(bme688Object, "breath_voc_equivalent", bme688BreathVoc);
+    cJSON_AddNumberToObject(bme688Object, "gas_percentage", bme688GasPercentage);
+    cJSON_AddNumberToObject(bme688Object, "stabilization_status", bme688StabStatus);
+    cJSON_AddNumberToObject(bme688Object, "run_in_status", bme688RunInStatus);
 
     struct tm timeinfo;
     getLocalTime(&timeinfo, 1000);
@@ -539,33 +560,49 @@ static void postAPControl() {
 
 static bool getSCD40MeasurementResult(SensirionI2CScd4x& scd4x, uint16_t& co2, float& temperature, float& humidity) {
     log_d("Getting SCD40 measurement");
-    
+
     uint16_t error;
     char errorMessage[256];
-    
+
     error = scd4x.readMeasurement(co2, temperature, humidity);
     if (error) {
         errorToString(error, errorMessage, 256);
         log_e("Error reading SCD40 measurement: %s", errorMessage);
         return false;
     }
-    
+
     log_d("SCD40 measurement successful - CO2: %d, Temp: %.2f, Humidity: %.2f", 
           co2, temperature, humidity);
     return true;
 }
 
-static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, float& gasResistance) {
+static bool getBME688MeasurementResult(Bsec& bme688, float& temperature, float& humidity, float& pressure, 
+                                  float& gasResistance, float& iaq, float& staticIaq, float& co2Equivalent,
+                                  float& breathVocEquivalent, float& gasPercentage, uint8_t& iaqAccuracy,
+                                  uint8_t& stabStatus, uint8_t& runInStatus) {
     log_d("Getting BME688 measurement");
-    
+
     if (bme688.run()) {
+        // Extract basic measurements
         temperature = bme688.temperature;
         humidity = bme688.humidity;
         pressure = bme688.pressure;
         gasResistance = bme688.gasResistance;
-        
+
+        // Extract additional measurements
+        iaq = bme688.iaq;
+        staticIaq = bme688.staticIaq;
+        co2Equivalent = bme688.co2Equivalent;
+        breathVocEquivalent = bme688.breathVocEquivalent;
+        gasPercentage = bme688.gasPercentage;
+        iaqAccuracy = bme688.iaqAccuracy;
+        stabStatus = bme688.stabStatus;
+        runInStatus = bme688.runInStatus;
+
         log_d("BME688 measurement successful - Temp: %.2f, Humidity: %.2f, Pressure: %.2f, Gas: %.2f",
               temperature, humidity, pressure, gasResistance);
+        log_d("BME688 additional measurements - IAQ: %.2f (Accuracy: %d), Static IAQ: %.2f, CO2 Eq: %.2f, VOC: %.2f",
+              iaq, iaqAccuracy, staticIaq, co2Equivalent, breathVocEquivalent);
         return true;
     } else {
         log_e("BME688 measurement failed");

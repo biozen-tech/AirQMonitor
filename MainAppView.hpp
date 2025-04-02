@@ -32,7 +32,7 @@ public:
         float vocIndex,
         float noxIndex
     );
-    void updateBME688(float temperature, float humidity, float pressure, float gasResistance);
+    void updateBME688(float temperature, float humidity, float pressure, float gasResistance, float iaq, float co2Equivalent);
     void updatePower(uint32_t voltage);
     // Removed countdown display
     // void updateCountdown(uint32_t seconds);
@@ -130,6 +130,8 @@ private:
     M5Canvas *_bme688HumiCanvas = nullptr;
     M5Canvas *_bme688PressCanvas = nullptr;
     M5Canvas *_bme688GasCanvas = nullptr;
+    M5Canvas *_bme688IaqCanvas = nullptr;
+    M5Canvas *_bme688Co2EqCanvas = nullptr;
     int32_t _bme688TempCanvasX = 0;
     int32_t _bme688TempCanvasY = 0;
     int32_t _bme688HumiCanvasX = 0;
@@ -138,6 +140,10 @@ private:
     int32_t _bme688PressCanvasY = 0;
     int32_t _bme688GasCanvasX = 0;
     int32_t _bme688GasCanvasY = 0;
+    int32_t _bme688IaqCanvasX = 0;
+    int32_t _bme688IaqCanvasY = 0;
+    int32_t _bme688Co2EqCanvasX = 0;
+    int32_t _bme688Co2EqCanvasY = 0;
 
     // Power
     M5Canvas *_voltageCanvas = nullptr;

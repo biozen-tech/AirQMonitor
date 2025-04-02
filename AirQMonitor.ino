@@ -316,10 +316,13 @@ void setup() {
     bme688.begin(BME68X_I2C_ADDR_HIGH, Wire1);
     log_w("BSEC library version %s.%s.%s.%s", String(bme688.version.major), String(bme688.version.minor), String(bme688.version.major_bugfix), String(bme688.version.minor_bugfix));
 
+    // Set the highest quality settings for Temperature, Pressure, and Humidity over-sampling
+    bme688.setTPH(BME68X_OS_16X, BME68X_OS_16X, BME68X_OS_16X);
+
     // Initialize BME688 sensor
     if (!checkBme688SensorStatus())
     {
-        log_e("BME688 sensor initialization failed. Exiting setup.");
+        log_e("BME688 sensor initialization failed. Ignoring Sensor.");
         // Set default values to prevent crashes
         sensor.bme680.temperature = 0.0f;
         sensor.bme680.humidity = 0.0f;
@@ -346,7 +349,7 @@ void setup() {
         };
 
         bme688.updateSubscription(sensorList, 13, BSEC_SAMPLE_RATE_LP);
-        log_i("BME688 sensor subscribed successfully.");
+        log_i("BME688 sensor subscribed successfully with HIGH PERFORMANCE mode.");
     }
 
 
@@ -541,7 +544,9 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             sensor.bme680.temperature,
             sensor.bme680.humidity,
             sensor.bme680.pressure,
-            sensor.bme680.gasResistance
+            sensor.bme680.gasResistance,
+            sensor.bme680.iaq,
+            sensor.bme680.co2Equivalent
         );
 
         statusView.load();
@@ -1180,6 +1185,14 @@ bool uploadSensorRawData(EzData &ezdataHanlder) {
     cJSON_AddNumberToObject(bme688Object, "humidity", sensor.bme680.humidity);
     cJSON_AddNumberToObject(bme688Object, "pressure", sensor.bme680.pressure);
     cJSON_AddNumberToObject(bme688Object, "gas_resistance", sensor.bme680.gasResistance);
+    cJSON_AddNumberToObject(bme688Object, "iaq", sensor.bme680.iaq);
+    cJSON_AddNumberToObject(bme688Object, "iaq_accuracy", sensor.bme680.iaqAccuracy);
+    cJSON_AddNumberToObject(bme688Object, "static_iaq", sensor.bme680.staticIaq);
+    cJSON_AddNumberToObject(bme688Object, "co2_equivalent", sensor.bme680.co2Equivalent);
+    cJSON_AddNumberToObject(bme688Object, "breath_voc_equivalent", sensor.bme680.breathVocEquivalent);
+    cJSON_AddNumberToObject(bme688Object, "gas_percentage", sensor.bme680.gasPercentage);
+    cJSON_AddNumberToObject(bme688Object, "stabilization_status", sensor.bme680.stabStatus);
+    cJSON_AddNumberToObject(bme688Object, "run_in_status", sensor.bme680.runInStatus);
 
     cJSON_AddNumberToObject(rtcObject, "sleep_interval", db.rtc.sleepInterval);
     cJSON_AddStringToObject(profileObject, "nickname", db.nickname.c_str());
@@ -1311,6 +1324,10 @@ void shutdown() {
     wakeupType = E_WAKEUP_TYPE_USB;
     digitalWrite(POWER_HOLD, HIGH);
     delay(10);
+    // Skip deep sleep if USB powered
+    return;
+
+    // The following code will only execute if the device is not USB powered
     gpio_hold_en((gpio_num_t)SEN55_POWER_EN);
     gpio_deep_sleep_hold_en();
     esp_sleep_enable_timer_wakeup(db.rtc.sleepInterval * 1000000);

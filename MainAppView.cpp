@@ -8,16 +8,16 @@ StatusView::StatusView(LGFX_Device *lcd, M5Canvas *canvas) {
     log_i("Constructor called with lcd and canvas");
     _lcd = lcd;
     _canvas = canvas;
-    
+
     // Initialize column width and cursor positions with fixed LCD dimensions
     _columnWidth = 98;  // (200 - 4) / 2 = 98 for each column
     log_i("Initialized column width: %ld", _columnWidth);
-    
+
     // Set right column positions
-    _bme688BaseCursorX = 100;  // Start at right column (200/2)
-    _bme688BaseCursorY = 2;    // Start at top of right column
+    _bme688BaseCursorX = 2;    // Start at left column
+    _bme688BaseCursorY = 2 + 69 + 2;  // Position below SCD40 section
     _powerBaseCursorX = 100;   // Start at right column (200/2)
-    _powerBaseCursorY = 2 + 69 + 2;  // Position below BME688 section
+    _powerBaseCursorY = 2 + 69 + 2;  // Position below SEN55 section
     log_i("Initialized cursor positions - BME688: (%ld, %ld), Power: (%ld, %ld)", 
          _bme688BaseCursorX, _bme688BaseCursorY, _powerBaseCursorX, _powerBaseCursorY);
 }
@@ -32,15 +32,16 @@ StatusView::~StatusView() {
           _co2Canvas, _tempCanvas, _humiCanvas);
     log_i("  SEN55 - PM1.0: %p, PM2.5: %p, PM4.0: %p, PM10: %p",
           _pm1p0Canvas, _pm2p5Canvas, _pm4p0Canvas, _pm10p0Canvas);
-    log_i("  Status - Title: %p, Msg: %p",
-          _statusTitleCanvas, _statusMsgCanvas);
+    // Removed statustitle, statusmsg, and nickname UI controls
+    // log_i("  Status - Title: %p, Msg: %p",
+    //       _statusTitleCanvas, _statusMsgCanvas);
     log_i("  Power - Voltage: %p",
           _voltageCanvas);
 }
 
 void StatusView::begin() {
     log_i("begin() called");
-    
+
     // Create sprite with full LCD dimensions
     log_i("Creating main canvas sprite with dimensions: %dx%d", _lcd->width(), _lcd->height());
     _canvas->createSprite(_lcd->width(), _lcd->height());
@@ -48,29 +49,29 @@ void StatusView::begin() {
     _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
     _canvas->fillSprite(TFT_WHITE);
 
-    // Draw vertical divider line
-    log_i("Drawing vertical divider line at x=%ld", _lcd->width() / 2);
-    _canvas->drawLine(_lcd->width() / 2, 0, _lcd->width() / 2, _lcd->height(), TFT_BLACK);
+    // No vertical divider line in the new design
+    log_i("No vertical divider line in the new design");
 
+    // Removed countdown display
     // Initialize chart canvases
-    log_i("Initializing chart canvases");
-    _chartCanvas = new M5Canvas(_canvas);
-    _chartCanvas->createSprite(60, 12);  // Width for time display, height for font
-    _chartCanvas->setBaseColor(TFT_WHITE);
-    _chartCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-    _chartCanvas->setTextDatum(TL_DATUM);
-    _chartCanvas->setTextSize(1);
+    // log_i("Initializing chart canvases");
+    // _chartCanvas = new M5Canvas(_canvas);
+    // _chartCanvas->createSprite(60, 12);  // Width for time display, height for font
+    // _chartCanvas->setBaseColor(TFT_WHITE);
+    // _chartCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+    // _chartCanvas->setTextDatum(TL_DATUM);
+    // _chartCanvas->setTextSize(1);
 
-    _chartCanvas1 = new M5Canvas(_lcd);
-    _chartCanvas1->createSprite(60, 12);  // Width for time display, height for font
-    _chartCanvas1->setBaseColor(TFT_WHITE);
-    _chartCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
-    _chartCanvas1->setTextDatum(TL_DATUM);
-    _chartCanvas1->setTextSize(1);
+    // _chartCanvas1 = new M5Canvas(_lcd);
+    // _chartCanvas1->createSprite(60, 12);  // Width for time display, height for font
+    // _chartCanvas1->setBaseColor(TFT_WHITE);
+    // _chartCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
+    // _chartCanvas1->setTextDatum(TL_DATUM);
+    // _chartCanvas1->setTextSize(1);
 
     // Set chart canvas positions
-    _chartCanvasX = 2;
-    _chartCanvasY = _lcd->height() - 34;  // Position above logo
+    // _chartCanvasX = 2;
+    // _chartCanvasY = _lcd->height() - 14;  // Position at bottom of screen (was above logo)
 
     // Initialize sections in their respective columns
     log_i("Initializing UI sections");
@@ -82,13 +83,17 @@ void StatusView::begin() {
     log_i("BME688 initialization complete");
     initPower();    // Right column, bottom
     log_i("Power initialization complete");
-    initStatus();   // Status at the bottom
-    log_i("Status initialization complete");
-    initLOGO();     // Logo at the bottom
-    log_i("Logo initialization complete");
+    // Status section removed in the new design
+    // initStatus();   // Status at the bottom
+    // log_i("Status initialization complete");
+    // Removed statustitle, statusmsg, and nickname UI controls
+    // initLOGO();     // Logo at the bottom
+    // log_i("Logo initialization complete");
     log_i("UI initialization complete");
 }
 
+// Removed statustitle, statusmsg, and nickname UI controls
+/*
 void StatusView::initStatus()
 {
     log_i("Initializing status section");
@@ -115,10 +120,10 @@ void StatusView::initStatus()
     tempY = _lcd->height() - tempH - 2;  // Position at bottom with border
     log_i("Drawing status section at (%ld, %ld)", tempX, tempY);
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    
+
     // Header background
     _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_statusTitleFont) + (_padding * 2), TFT_BLACK);
-    
+
     // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
@@ -173,6 +178,7 @@ void StatusView::initStatus()
     _statusMsgCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
     log_i("Status section initialization complete");
 }
+*/
 
 void StatusView::initSCD40()
 {
@@ -277,11 +283,14 @@ void StatusView::initPower()
 
     tempW = _lcd->width() / 2 - 4;  // Half width minus borders
 
+    // Add height for battery percentage
     tempH = _border
             + _padding
             + _canvas->fontHeight(_powerTitleFont)
             + _padding
             + _canvas->fontHeight(_poweroptionFont)
+            + _padding
+            + _canvas->fontHeight(_poweroptionFont)  // Added for battery percentage
             + _padding
             + _border;
 
@@ -292,10 +301,10 @@ void StatusView::initPower()
     tempX = _powerBaseCursorX;
     tempY = _powerBaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    
+
     // Header background
     _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_powerTitleFont) + (_padding * 2), TFT_BLACK);
-    
+
     // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
@@ -305,25 +314,47 @@ void StatusView::initPower()
     _canvas->drawString("Power", tempX, tempY, _powerTitleFont);
     _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
-    // Battery label
+    // Battery voltage label
     tempX = _powerBaseCursorX + _border + _padding;
     tempY = tempY + _canvas->fontHeight(_powerTitleFont) + _padding;
-    _canvas->drawString("BAT", tempX, tempY, _poweroptionFont);
+    _canvas->drawString("BAT V:", tempX, tempY, _poweroptionFont);
 
-    // Battery value position
-    _voltageCanvasX = tempX + _canvas->textWidth("BAT", _poweroptionFont) + _padding;
+    // Calculate right edge of the power section for right-aligned values
+    int32_t rightEdge = _powerBaseCursorX + tempW - _border - _padding;
+
+    // Battery voltage value position (right-aligned)
+    _voltageCanvasX = rightEdge - _canvas->textWidth("0.00V", _poweroptionFont);
     _voltageCanvasY = tempY;
 
-    // Create sprites with proper dimensions
+    // Create voltage canvas with proper dimensions
     _voltageCanvas = new M5Canvas(_canvas);
     _voltageCanvas->createSprite(
-        _voltageCanvas->textWidth("0.00", _poweroptionFont),
+        _voltageCanvas->textWidth("0.00V", _poweroptionFont),
         _voltageCanvas->fontHeight(_poweroptionFont)
     );
     _voltageCanvas->setBaseColor(TFT_WHITE);
     _voltageCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
+
+    // Battery percentage label
+    tempY = tempY + _canvas->fontHeight(_poweroptionFont) + _padding;
+    _canvas->drawString("BAT %:", tempX, tempY, _poweroptionFont);
+
+    // Battery percentage value position (right-aligned)
+    _percentageCanvasX = rightEdge - _canvas->textWidth("100%", _poweroptionFont);
+    _percentageCanvasY = tempY;
+
+    // Create percentage canvas with proper dimensions
+    _percentageCanvas = new M5Canvas(_canvas);
+    _percentageCanvas->createSprite(
+        _percentageCanvas->textWidth("100%", _poweroptionFont),
+        _percentageCanvas->fontHeight(_poweroptionFont)
+    );
+    _percentageCanvas->setBaseColor(TFT_WHITE);
+    _percentageCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 }
 
+// Removed statustitle, statusmsg, and nickname UI controls
+/*
 void StatusView::initLOGO()
 {
     log_i("Initializing logo section");
@@ -335,7 +366,7 @@ void StatusView::initLOGO()
     _nicknameCanvas->createSprite(_lcd->width() - 4, 32);  // Full width minus borders
     _nicknameCanvas->setBaseColor(TFT_BLACK);
     _nicknameCanvas->setTextColor(TFT_WHITE, TFT_BLACK);
- 
+
     _nicknameCanvas->clear();
     int32_t cursorX = (_lcd->width() - 4) / 2;  // Center in full width
     int32_t cursorY = (32 - _canvas->fontHeight(&fonts::efontCN_14)) / 2;
@@ -353,6 +384,7 @@ void StatusView::initLOGO()
 
     log_i("Logo section initialized successfully");
 }
+*/
 
 void StatusView::initSEN55()
 {
@@ -392,10 +424,10 @@ void StatusView::initSEN55()
     tempX = _sen55BaseCursorX;
     tempY = _sen55BaseCursorY;
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    
+
     // Header background
     _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_sen55TitleFont) + (_padding * 2), TFT_BLACK);
-    
+
     // Header text
     tempX = tempX + _border + _padding;
     tempY = tempY + _border + _padding;
@@ -566,10 +598,10 @@ void StatusView::initBME688()
 
     // Draw the container box
     _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-    
+
     // Header background
     _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_bme688TitleFont) + (_padding * 2), TFT_BLACK);
-    
+
     // Header text
     int32_t headerX = tempX + _border + _padding;
     int32_t headerY = tempY + _border + _padding;
@@ -625,7 +657,7 @@ void StatusView::initBME688()
     // Draw labels on the main canvas
     int32_t labelX = tempX + _border + _padding;
     int32_t labelY = headerY + _canvas->fontHeight(_bme688TitleFont) + _padding;
-    
+
     _canvas->drawString("Temp:", labelX, labelY);
     _canvas->drawString("Humi:", labelX, labelY + 15);
     _canvas->drawString("Press:", labelX, labelY + 30);
@@ -671,28 +703,46 @@ void StatusView::updatePower(uint32_t voltage)
     }
 
     log_i("Updating power display with voltage: %lu", voltage);
-    if (!_voltageCanvas) {
-        log_e("Voltage canvas not initialized");
+    if (!_voltageCanvas || !_percentageCanvas) {
+        log_e("Power canvases not initialized - Voltage: %p, Percentage: %p", 
+              _voltageCanvas, _percentageCanvas);
         return;
     }
 
     char str[13] = { 0 };
 
+    // Clear canvases
     _voltageCanvas->clear(TFT_WHITE);
+    _percentageCanvas->clear(TFT_WHITE);
 
+    // Calculate voltage
     float v = (((float)voltage / 1000) * 2);
     v = v > 4.2 ? 4.2 : v;
 
-    sprintf(str, "BAT:%.2fV", v);
-    log_i("Drawing power value: %s", str);
-    _voltageCanvas->drawString(str, 0, 0, _poweroptionFont);
+    // Calculate battery percentage (simple linear mapping)
+    // 3.0V = 0%, 4.2V = 100%
+    int percentage = (int)((v - 3.0) / 1.2 * 100);
+    percentage = percentage < 0 ? 0 : percentage;
+    percentage = percentage > 100 ? 100 : percentage;
 
+    // Format and display voltage
+    sprintf(str, "%.2fV", v);
+    log_i("Drawing voltage value: %s", str);
+    _voltageCanvas->drawRightString(str, _voltageCanvas->width(), 0, _poweroptionFont);
     _updateImpl(_voltageCanvas, _voltageCanvasX, _voltageCanvasY);
 
+    // Format and display percentage
+    sprintf(str, "%d%%", percentage);
+    log_i("Drawing percentage value: %s", str);
+    _percentageCanvas->drawRightString(str, _percentageCanvas->width(), 0, _poweroptionFont);
+    _updateImpl(_percentageCanvas, _percentageCanvasX, _percentageCanvasY);
+
     lastVoltage = voltage;
-    log_i("Power display updated with voltage: %.2fV", v);
+    log_i("Power display updated - Voltage: %.2fV, Percentage: %d%%", v, percentage);
 }
 
+// Removed countdown display
+/*
 void StatusView::updateCountdown(uint32_t seconds) {
     log_i("Updating countdown with seconds: %lu", seconds);
     if (!_chartCanvas) {
@@ -767,6 +817,7 @@ void StatusView::displayCountdown(uint32_t seconds) {
     updateCountdown(seconds);
     log_i("Countdown display completed");
 }
+*/
 
 void StatusView::updateSEN55(
     float massConcentrationPm1p0,
@@ -807,54 +858,56 @@ void StatusView::updateSEN55(
     // Update each value
     sprintf(str, "%.2f", massConcentrationPm1p0);
     log_i("Updating PM1.0: %s", str);
-    _pm1p0Canvas->drawRightString(str, _pm1p0Canvas->width(), 0, _sen55OptionFont);
+    _pm1p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
     _pm1p0Canvas->pushSprite(_pm1p0CanvasX, _pm1p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm2p5);
     log_i("Updating PM2.5: %s", str);
-    _pm2p5Canvas->drawRightString(str, _pm2p5Canvas->width(), 0, _sen55OptionFont);
+    _pm2p5Canvas->drawString(str, 0, 0, _sen55OptionFont);
     _pm2p5Canvas->pushSprite(_pm2p5CanvasX, _pm2p5CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm4p0);
     log_i("Updating PM4.0: %s", str);
-    _pm4p0Canvas->drawRightString(str, _pm4p0Canvas->width(), 0, _sen55OptionFont);
+    _pm4p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
     _pm4p0Canvas->pushSprite(_pm4p0CanvasX, _pm4p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm10p0);
     log_i("Updating PM10: %s", str);
-    _pm10p0Canvas->drawRightString(str, _pm10p0Canvas->width(), 0, _sen55OptionFont);
+    _pm10p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
     _pm10p0Canvas->pushSprite(_pm10p0CanvasX, _pm10p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", ambientTemperature);
     log_i("Updating Temperature: %s", str);
-    _sen55TempCanvas->drawRightString(str, _sen55TempCanvas->width(), 0, _sen55OptionFont);
+    _sen55TempCanvas->drawString(str, 0, 0, _sen55OptionFont);
     _sen55TempCanvas->pushSprite(_sen55TempCanvasX, _sen55TempCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", ambientHumidity);
     log_i("Updating Humidity: %s", str);
-    _sen55HumiCanvas->drawRightString(str, _sen55HumiCanvas->width(), 0, _sen55OptionFont);
+    _sen55HumiCanvas->drawString(str, 0, 0, _sen55OptionFont);
     _sen55HumiCanvas->pushSprite(_sen55HumiCanvasX, _sen55HumiCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", vocIndex);
     log_i("Updating VOC: %s", str);
-    _vocCanvas->drawRightString(str, _pm1p0Canvas->width(), 0, _sen55OptionFont);
+    _vocCanvas->drawString(str, 0, 0, _sen55OptionFont);
     _vocCanvas->pushSprite(_vocCanvasX, _vocCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", noxIndex);
     log_i("Updating NOx: %s", str);
-    _noxCanvas->drawRightString(str, _noxCanvas->width(), 0, _sen55OptionFont);
+    _noxCanvas->drawString(str, 0, 0, _sen55OptionFont);
     _noxCanvas->pushSprite(_noxCanvasX, _noxCanvasY);
 
     log_i("SEN55 update completed successfully");
 }
 
+// Removed statustitle, statusmsg, and nickname UI controls
+/*
 void StatusView::displayNetworkStatus(const char *title, const char *msg) {
     log_i("Displaying network status - Title: %s, Message: %s", title, msg);
     if (!_statusTitleCanvas1 || !_statusMsgCanvas1) {
@@ -889,7 +942,10 @@ void StatusView::updateNetworkStatus(const char *title, const char *msg) {
     _updateImpl(_statusMsgCanvas, _statusMsgCanvasX, _statusMsgCanvasY);
     log_i("Network status update completed");
 }
+*/
 
+// Removed statustitle, statusmsg, and nickname UI controls
+/*
 void StatusView::displayNickname(String &nickname) {
     log_i("Displaying nickname: %s", nickname.c_str());
     if (!_nicknameCanvas1) {
@@ -956,6 +1012,7 @@ void StatusView::updateNickname(String &nickname) {
     _updateImpl(_nicknameCanvas, _nicknameCanvasX, _nicknameCanvasY);
     log_i("Nickname update completed");
 }
+*/
 
 void StatusView::load() {
     log_i("Loading view");
@@ -1037,28 +1094,24 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
         return;
     }
 
-    // Bounds checking for temperature
+    // Bounds checking for temperature - log warning but don't return
     if (temperature < -40.0f || temperature > 85.0f) {
         log_w("Temperature out of bounds: %.2f", temperature);
-        return;
     }
 
-    // Bounds checking for humidity
+    // Bounds checking for humidity - log warning but don't return
     if (humidity < 0.0f || humidity > 100.0f) {
         log_w("Humidity out of bounds: %.2f", humidity);
-        return;
     }
 
-    // Bounds checking for pressure
+    // Bounds checking for pressure - log warning but don't return
     if (pressure < 300.0f || pressure > 1100.0f) {
         log_w("Pressure out of bounds: %.2f", pressure);
-        return;
     }
 
-    // Bounds checking for gas resistance
+    // Bounds checking for gas resistance - log warning but don't return
     if (gasResistance < 0.0f || gasResistance > 100000.0f) {
         log_w("Gas resistance out of bounds: %.2f", gasResistance);
-        return;
     }
 
     char str[16] = { 0 };
@@ -1067,7 +1120,7 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     log_i("Updating temperature display");
     _bme688TempCanvas->fillSprite(TFT_WHITE);
     snprintf(str, sizeof(str), "%.1f", temperature);
-    _bme688TempCanvas->drawString(str, 0, 0);
+    _bme688TempCanvas->drawString(str, 0, 0, _bme688OptionFont);
     log_i("Pushing temperature canvas to display at (%ld, %ld)", _bme688TempCanvasX, _bme688TempCanvasY);
     _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
 
@@ -1075,7 +1128,7 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     log_i("Updating humidity display");
     _bme688HumiCanvas->fillSprite(TFT_WHITE);
     snprintf(str, sizeof(str), "%.1f", humidity);
-    _bme688HumiCanvas->drawString(str, 0, 0);
+    _bme688HumiCanvas->drawString(str, 0, 0, _bme688OptionFont);
     log_i("Pushing humidity canvas to display at (%ld, %ld)", _bme688HumiCanvasX, _bme688HumiCanvasY);
     _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
 
@@ -1083,7 +1136,7 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     log_i("Updating pressure display");
     _bme688PressCanvas->fillSprite(TFT_WHITE);
     snprintf(str, sizeof(str), "%.1f", pressure);
-    _bme688PressCanvas->drawString(str, 0, 0);
+    _bme688PressCanvas->drawString(str, 0, 0, _bme688OptionFont);
     log_i("Pushing pressure canvas to display at (%ld, %ld)", _bme688PressCanvasX, _bme688PressCanvasY);
     _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
 
@@ -1091,7 +1144,7 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
     log_i("Updating gas resistance display");
     _bme688GasCanvas->fillSprite(TFT_WHITE);
     snprintf(str, sizeof(str), "%.1f", gasResistance);
-    _bme688GasCanvas->drawString(str, 0, 0);
+    _bme688GasCanvas->drawString(str, 0, 0, _bme688OptionFont);
     log_i("Pushing gas resistance canvas to display at (%ld, %ld)", _bme688GasCanvasX, _bme688GasCanvasY);
     _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
 

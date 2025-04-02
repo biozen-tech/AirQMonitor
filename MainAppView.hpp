@@ -34,20 +34,23 @@ public:
     );
     void updateBME688(float temperature, float humidity, float pressure, float gasResistance);
     void updatePower(uint32_t voltage);
-    void updateCountdown(uint32_t seconds);
-    void displayCountdown(uint32_t seconds);
-    void displayNetworkStatus(const char *title, const char *msg);
-    void updateNetworkStatus(const char *title, const char *msg);
-    void displayNickname(String &nickname);
-    void updateNickname(String &nickname);
+    // Removed countdown display
+    // void updateCountdown(uint32_t seconds);
+    // void displayCountdown(uint32_t seconds);
+    // Removed statustitle, statusmsg, and nickname UI controls
+    // void displayNetworkStatus(const char *title, const char *msg);
+    // void updateNetworkStatus(const char *title, const char *msg);
+    // void displayNickname(String &nickname);
+    // void updateNickname(String &nickname);
 
 private:
-    void initLOGO();
+    // Removed statustitle, statusmsg, and nickname UI controls
+    // void initLOGO();
     void initSCD40();
     void initPower();
     void initSEN55();
     void initBME688();
-    void initStatus();
+    // void initStatus();
     void _updateImpl(M5Canvas *canvas, int32_t x, int32_t y);
     void splitLongString(String &text, int32_t maxWidth, const lgfx::IFont* font);
 
@@ -62,8 +65,8 @@ private:
     static const int32_t _scd40BaseCursorX = 2;
     static const int32_t _scd40BaseCursorY = 2;
 
-    static const int32_t _sen55BaseCursorX = 2;
-    static const int32_t _sen55BaseCursorY = 2 + 69 + 2;
+    static const int32_t _sen55BaseCursorX = 100;
+    static const int32_t _sen55BaseCursorY = 2;
 
     // Right column positions - these will be initialized in constructor
     int32_t _columnWidth = 0;  // Will be initialized in constructor
@@ -81,8 +84,9 @@ private:
     const lgfx::IFont* _bme688OptionFont = &fonts::efontCN_12;
     const lgfx::IFont* _powerTitleFont = &fonts::efontCN_14;
     const lgfx::IFont* _poweroptionFont = &fonts::efontCN_12;
-    const lgfx::IFont* _statusTitleFont = &fonts::efontCN_14;
-    const lgfx::IFont* _statusMsgFont = &fonts::efontCN_12;
+    // Removed statustitle, statusmsg, and nickname UI controls
+    // const lgfx::IFont* _statusTitleFont = &fonts::efontCN_14;
+    // const lgfx::IFont* _statusMsgFont = &fonts::efontCN_12;
 
     // SCD40
     M5Canvas *_co2Canvas = nullptr;
@@ -137,26 +141,32 @@ private:
 
     // Power
     M5Canvas *_voltageCanvas = nullptr;
-    M5Canvas *_chartCanvas = nullptr;
-    M5Canvas *_chartCanvas1 = nullptr;
+    M5Canvas *_percentageCanvas = nullptr;
+    // Removed countdown display
+    // M5Canvas *_chartCanvas = nullptr;
+    // M5Canvas *_chartCanvas1 = nullptr;
     int32_t _voltageCanvasX = 0;
     int32_t _voltageCanvasY = 0;
-    int32_t _chartCanvasX = 0;
-    int32_t _chartCanvasY = 0;
+    int32_t _percentageCanvasX = 0;
+    int32_t _percentageCanvasY = 0;
+    // Removed countdown display
+    // int32_t _chartCanvasX = 0;
+    // int32_t _chartCanvasY = 0;
 
+    // Removed statustitle, statusmsg, and nickname UI controls
     // Status
-    M5Canvas *_statusTitleCanvas = nullptr;
-    M5Canvas *_statusTitleCanvas1 = nullptr;
-    M5Canvas *_statusMsgCanvas = nullptr;
-    M5Canvas *_statusMsgCanvas1 = nullptr;
-    int32_t _statusTitleCanvasX = 0;
-    int32_t _statusTitleCanvasY = 0;
-    int32_t _statusMsgCanvasX = 0;
-    int32_t _statusMsgCanvasY = 0;
+    // M5Canvas *_statusTitleCanvas = nullptr;
+    // M5Canvas *_statusTitleCanvas1 = nullptr;
+    // M5Canvas *_statusMsgCanvas = nullptr;
+    // M5Canvas *_statusMsgCanvas1 = nullptr;
+    // int32_t _statusTitleCanvasX = 0;
+    // int32_t _statusTitleCanvasY = 0;
+    // int32_t _statusMsgCanvasX = 0;
+    // int32_t _statusMsgCanvasY = 0;
 
     // Logo
-    M5Canvas *_nicknameCanvas = nullptr;
-    M5Canvas *_nicknameCanvas1 = nullptr;
-    int32_t _nicknameCanvasX = 0;
-    int32_t _nicknameCanvasY = 0;
+    // M5Canvas *_nicknameCanvas = nullptr;
+    // M5Canvas *_nicknameCanvas1 = nullptr;
+    // int32_t _nicknameCanvasX = 0;
+    // int32_t _nicknameCanvasY = 0;
 };

@@ -315,7 +315,7 @@ void setup() {
 
     bme688.begin(BME68X_I2C_ADDR_HIGH, Wire1);
     log_w("BSEC library version %s.%s.%s.%s", String(bme688.version.major), String(bme688.version.minor), String(bme688.version.major_bugfix), String(bme688.version.minor_bugfix));
-    
+
     // Initialize BME688 sensor
     if (!checkBme688SensorStatus())
     {
@@ -367,10 +367,10 @@ void setup() {
 
     btnA.attachClick(btnAClickEvent);
     btnA.attachLongPressStart(btnALongPressStartEvent);
-    btnA.setPressTicks(5000);
+    btnA.setPressMs(5000);
     btnB.attachClick(btnBClickEvent);
     btnB.attachLongPressStart(btnBLongPressStartEvent);
-    btnB.setPressTicks(5000);
+    btnB.setPressMs(5000);
     // btnPower.attachClick(btnPowerClickEvent);
     buttonEventQueue = xQueueCreate(16, sizeof(ButtonEvent_t));
 
@@ -525,7 +525,8 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             sensor.scd40.humidity
         );
         statusView.updatePower(sensor.battery.raw);
-        statusView.updateCountdown(db.rtc.sleepInterval);
+        // Removed countdown display
+        // statusView.updateCountdown(db.rtc.sleepInterval);
         statusView.updateSEN55(
             sensor.sen55.massConcentrationPm1p0,
             sensor.sen55.massConcentrationPm2p5,
@@ -558,7 +559,8 @@ void mainApp(ButtonEvent_t *buttonEvent) {
 
     if (currentMillisecond - lastCountDownUpdate > 1000) {
         lastCountDown--;
-        statusView.displayCountdown(lastCountDown);
+        // Removed countdown display
+        // statusView.displayCountdown(lastCountDown);
         if (lastCountDown == 0) {
             lastCountDown = db.rtc.sleepInterval;
             refresh = true;
@@ -572,7 +574,7 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             successCounter += 1;
             preferences.putUInt("OK", successCounter);
             String msg = "OK:" + String(successCounter);
-            statusView.displayNetworkStatus("Upload", msg.c_str());
+            // statusView.displayNetworkStatus("Upload", msg.c_str());
             runingEzdataUpload = false;
             ezdataState = E_EZDATA_STATE_SUCCESS;
             ezdataStatus = true;
@@ -580,7 +582,7 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             failCounter += 1;
             preferences.putUInt("NG", failCounter);
             String msg = "NG:" + String(failCounter);
-            statusView.displayNetworkStatus("Upload", msg.c_str());
+            // statusView.displayNetworkStatus("Upload", msg.c_str());
         }
     }
 
@@ -861,10 +863,10 @@ void networkStatusUpdateServiceTask() {
         //         networkStatusMsgEvent.content
         //     );
         // } else {
-            statusView.updateNetworkStatus(
-                networkStatusMsgEvent.title,
-                networkStatusMsgEvent.content
-            );
+            // statusView.updateNetworkStatus(
+            //     networkStatusMsgEvent.title,
+            //     networkStatusMsgEvent.content
+            // );
         // }
     }
     if (runMode == E_RUN_MODE_MAIN && nickname != db.nickname) {
@@ -873,7 +875,7 @@ void networkStatusUpdateServiceTask() {
             nickname = "AirQ";
         }
         log_d("%s", db.nickname.c_str());
-        statusView.displayNickname(nickname);
+        // statusView.displayNickname(nickname);
         nickname = db.nickname;
     }
 
@@ -993,9 +995,9 @@ void wifiAPSTASetup() {
 
     if (db.wifi.ssid.length() == 0) {
         log_w("SSID missing");
-        statusView.updateNetworkStatus("WIFI", "no set");
+        // statusView.updateNetworkStatus("WIFI", "no set");
     } else {
-        statusView.updateNetworkStatus("WIFI", "......");
+        // statusView.updateNetworkStatus("WIFI", "......");
     }
 
     WiFi.begin(db.wifi.ssid.c_str(), db.wifi.password.c_str());

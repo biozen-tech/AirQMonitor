@@ -1,0 +1,1039 @@
+<div class="viewer"><div class="guide markdown"><h2 id="a - e" data-id="a - e">a - e</h2> <h3 id="begin" data-id="begin">begin</h3> <p>Initialize for use</p><p><strong>Syntax:</strong></p><p><code>void begin()</code></p><h3 id="begintransaction" data-id="beginTransaction">beginTransaction</h3> <p>Initiate a panel transaction.</p><p><strong>Syntax:</strong></p><p><code>void beginTransaction()</code></p><h3 id="calibratetouch" data-id="calibrateTouch">calibrateTouch</h3> <p>Calibrate the touch panel.
+    Pass a pointer to uint16_t[8] as the first argument to obtain a calibration value that can be used in setTouchCalibrate. You can record this value in flash, etc., and use
+    <a href="#settouchcalibrate">
+        setTouchCalibrate()
+    </a> at the next startup to omit manual calibration.</p><p><strong>Syntax:</strong></p><p><code>void calibrateTouch&lt;T&gt;(uint16_t* parameters, const T &amp;color_fg, const T &amp;color_bg)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>parameters</td> <td>uint16_t*</td> <td>uint16_t[8] Calibration Value</td></tr> <tr><td>color_fg</td> <td>const T(*1)</td> <td>Color of foreground</td></tr> <tr><td>color_bg</td> <td>const T(*1)</td> <td>Color of background</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-keyword">uint16_t</span> touch_point[<span class="hljs-number">8</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">calibrateTouch</span>(touch_point, BLACK, YELLOW);
+  display.<span class="hljs-built_in">clear</span>();
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">8</span>; i++) {
+    display.<span class="hljs-built_in">printf</span>(<span class="hljs-string">"%4x:"</span>, touch_point[i]);
+  }
+
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// put your main code here, to run repeatedly:</span>
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+uint16_t touch_point[8];
+
+void setup() {
+  display.begin();
+  display.calibrateTouch(touch_point, BLACK, YELLOW);
+  display.clear();
+
+  for (int i=0; i<8; i++) {
+    display.printf(&quot;%4x:&quot;, touch_point[i]);
+  }
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="clear" data-id="clear">clear</h3> <p>Clear the display. If an argument is specified, the display is initialized with that color.</p><p><strong>Syntax:</strong></p><p><code>void clear(const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>const T(*1)</td> <td>Color after initialization</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">clear</span>(RED);
+
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+  <span class="hljs-comment">// put your main code here, to run repeatedly:</span>
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  display.clear(RED);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="clearcliprect" data-id="clearClipRect">clearClipRect</h3> <p>Clear the coordinates specified by
+    <a href="#setcliprect">
+        setClipRect()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void clearClipRect()</code></p><h3 id="cleardisplay" data-id="clearDisplay">clearDisplay</h3> <p>Clear the display. If an argument is specified, the display is initialized with that color.</p><p><strong>Syntax:</strong></p><p><code>void clearDisplay(uint32_t color = 0)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>uint32_t</td> <td>Color after initialization</td></tr></tbody></table></div> <h3 id="clearscrollrect" data-id="clearScrollRect">clearScrollRect</h3> <p>Clear the coordinates specified by
+    <a href="#setscrollrect">
+        setScrollRect()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void clearScrollRect()</code></p><h3 id="color16to24" data-id="color16to24">color16to24</h3> <p>Convert color code from RGB565(16bit) to RGB888(24bit).</p><p><strong>Syntax:</strong></p><p><code>uint32_t color16to24(uint16_t rgb565)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>rgb565</td> <td>uint16_t</td> <td>ColorCode of RGB565</td></tr></tbody></table></div> <h3 id="color16to8" data-id="color16to8">color16to8</h3> <p>Convert color code from RGB565(16bit) to RGB332(8bit).</p><p><strong>Syntax:</strong></p><p><code>uint8_t color16to8(uint16_t rgb565)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>rgb565</td> <td>uint32_t</td> <td>ColorCode of RGB565</td></tr></tbody></table></div> <h3 id="color24to16" data-id="color24to16">color24to16</h3> <p>Convert color code from RGB888(24bit) to RGB565(16bit).</p><p><strong>Syntax:</strong></p><p><code>uint16_t color24to16(uint32_t rgb888)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>rgb888</td> <td>uint32_t</td> <td>ColorCode of RGB888</td></tr></tbody></table></div> <h3 id="color332" data-id="color332">color332</h3> <p>Generate color codes from the values of r, g, and b.</p><p><strong>Syntax:</strong></p><p><code>uint8_t color332(uint8_t r, uint8_t g, uint8_t b)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>r</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>g</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>b</td> <td>uint8_t</td> <td>0 - 255</td></tr></tbody></table></div> <h3 id="color565" data-id="color565">color565</h3> <p>Generate color codes from the values of r, g, and b.</p><p><strong>Syntax:</strong></p><p><code>uint16_t color332(uint8_t r, uint8_t g, uint8_t b)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>r</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>g</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>b</td> <td>uint8_t</td> <td>0 - 255</td></tr></tbody></table></div> <h3 id="color888" data-id="color888">color888</h3> <p>Generate color codes from the values of r, g, and b.</p><p><strong>Syntax:</strong></p><p><code>uint32_t color332(uint8_t r, uint8_t g, uint8_t b)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>r</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>g</td> <td>uint8_t</td> <td>0 - 255</td></tr> <tr><td>b</td> <td>uint8_t</td> <td>0 - 255</td></tr></tbody></table></div> <h3 id="color8to16" data-id="color8to16">color8to16</h3> <p>Convert color code from RGB332 to RGB565.</p><p><strong>Syntax:</strong></p><p><code>uint16_t color8to16(uint8_t rgb332)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>rgb332</td> <td>uint8_t</td> <td>ColorCode of RGB332</td></tr></tbody></table></div> <h3 id="convertrawxy" data-id="convertRawXY">convertRawXY</h3> <p>Convert coordinates obtained with
+    <a href="#gettouchraw">
+        getTouchRaw()
+    </a>.</p><p><strong>Syntax:</strong> <code>void convertRawXY(touch_po2 *tp, uint_fast8_t count)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>*tp</td> <td>touch_point_t</td> <td>touch point</td></tr> <tr><td>count</td> <td>uint_fast8_t</td> <td>count</td></tr></tbody></table></div> <h3 id="copyrect" data-id="copyRect">copyRect</h3> <p>Copy rectangle range.</p><p><strong>Syntax:</strong> <code>void copyRect(uint32_t dst_x, uint32_t dst_y, uint32_t w, uint32_t h, uint32_t src_x, uint32_t src_y)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dst_x</td> <td>uint32_t</td> <td>X coordinate of copy destination</td></tr> <tr><td>dst_y</td> <td>uint32_t</td> <td>Y coordinate of copy destination</td></tr> <tr><td>w</td> <td>uint32_t</td> <td>Rectangle width</td></tr> <tr><td>h</td> <td>uint32_t</td> <td>Rectangle height</td></tr> <tr><td>src_x</td> <td>uint32_t</td> <td>X coordinate of copy source</td></tr> <tr><td>src_y</td> <td>uint32_t</td> <td>Y coordinate of copy source</td></tr></tbody></table></div> <h3 id="createpng" data-id="createPng">createPng</h3> <p>Screenshot function. Executing this function saves the data displayed in the panel to memory in PNG format.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Notice:</strong><br>The size of image that can be stored depends on memory. For example, if PSRAM is disabled, a size of 320x240 cannot be saved.</div></div><p><strong>Syntax:</strong></p><p><code>void* createPng(size_t* datalen, int32_t x, int32_t y, int32_t w, int32_t h)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>datalen</td> <td>size_t*</td> <td>Data length</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x coordinate</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y coordinate</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rectangle width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rectangle width</td></tr></tbody></table></div> <h3 id="display" data-id="display">display</h3> <p>Display to the panel.(for M5Paper, CoreInk, OLEDUnit)</p><ul><li>CoreInk and OLEDUnit display the data drawn in memory on the panel.</li> <li>M5Paper displays on the panel what is drawn in memory on the EPD side.</li></ul> <p><strong>Syntax:</strong></p><p><code>void display()</code></p><h3 id="displaybusy" data-id="displayBusy">displayBusy</h3> <p>Check if the panel is Busy.</p><p><strong>Syntax:</strong></p><p><code>bool displayBusy()</code></p><h3 id="dmabusy" data-id="dmaBusy">dmaBusy</h3> <p>Check if the panel's DMA is busy.</p><p><strong>Syntax:</strong></p><p><code>bool dmaBusy()</code></p><h3 id="drawarc" data-id="drawArc">drawArc</h3> <p>Draws a circular arc. specifying r0 and r1 allows drawing a thick arc.</p><p><strong>Syntax:</strong></p><p><code>void drawArc(int32_t x, int32_t y, int32_t r0, int32_t r1, float angle0, float angle1, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>center x of arc</td></tr> <tr><td>y</td> <td>int32_t</td> <td>center y of arc</td></tr> <tr><td>r0</td> <td>int32_t</td> <td>Inner circle radius</td></tr> <tr><td>r1</td> <td>int32_t</td> <td>Outer circle radius</td></tr> <tr><td>angle0</td> <td>float</td> <td>Angle at which the arc starts</td></tr> <tr><td>angle1</td> <td>float</td> <td>Angle at which the arc ends</td></tr> <tr><td>color</td> <td>const T(*1)</td> <td>color of line</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">drawArc</span>(x, y, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">240</span>, TFT_WHITE);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.drawArc(x, y, 10, 20, 20, 240, TFT_WHITE);
+}
+
+void loop() {
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="drawbezier" data-id="drawBezier">drawBezier</h3> <p>Draws a Bezier curve, available in two types: 3-point and 4-point.</p><p><strong>Syntax:</strong></p><ul><li>3-points<br></li></ul> <p><code>void drawBezier(x0, y0, x1, y1, x2, y2, const int &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>point0 x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>point0 y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>point1 x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>point1 y</td></tr> <tr><td>x2</td> <td>int32_t</td> <td>point2 x</td></tr> <tr><td>y2</td> <td>int32_t</td> <td>point2 y</td></tr> <tr><td>color</td> <td>const T(*1)</td> <td>color of line</td></tr></tbody></table></div> <ul><li>4-points<br></li></ul> <p><code>void drawBezier(x0, y0, x1, y1, x2, y2, x3, y3, const int &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>point0 x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>point0 y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>point1 x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>point1 y</td></tr> <tr><td>x2</td> <td>int32_t</td> <td>point2 x</td></tr> <tr><td>y2</td> <td>int32_t</td> <td>point2 y</td></tr> <tr><td>x3</td> <td>int32_t</td> <td>point3 x</td></tr> <tr><td>y3</td> <td>int32_t</td> <td>point3 y</td></tr> <tr><td>color</td> <td>const T(*1)</td> <td>color of line</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">drawBezier</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, x, <span class="hljs-number">0</span>, x, y, TFT_WHITE);
+  display.<span class="hljs-built_in">drawBezier</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, x, <span class="hljs-number">0</span>, x, y, <span class="hljs-number">0</span>, y, TFT_WHITE);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.drawBezier(0, 0, x, 0, x, y, TFT_WHITE);
+  display.drawBezier(0, 0, x, 0, x, y, 0, y, TFT_WHITE);
+}
+
+void loop() {
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="drawbmp" data-id="drawBmp">drawBmp</h3> <p>Draw bitmap data. File or HTTPStream can be specified for data.</p><p><strong>Syntax:</strong></p><ul><li>FileSystem</li></ul> <p><code>void drawBmp(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>path</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>Stream</li></ul> <p><code>void drawBmp(Stream *dataSource, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>Stream*</td> <td>Stream object</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>data</li></ul> <p><code>void drawBmp(const uint8_t *data, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>const uint8_t*</td> <td>bmp data</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawbmpfile" data-id="drawBmpFile">drawBmpFile</h3> <p>Draw an image from a bmp file.</p><p><strong>Syntax:</strong></p><p><code>void drawBmpFile(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>pat</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawbmpurl" data-id="drawBmpUrl">drawBmpUrl</h3> <p>Displays a BMP image of the specified URL.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Notice:</strong><br>This function can be used by writing #include &lt;HTTPClient.h&gt; before #include &lt;M5GFX.h&gt;.</div></div><p><strong>Syntax:</strong></p><p><code>void drawBmpUrl(const String &amp;url, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>url</td> <td>const String</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawcenterstring(drawcentrestring)" data-id="drawCenterString(drawCentreString)">drawCenterString(drawCentreString)</h3> <p>Draw the text centered.</p><p><strong>Syntax:</strong></p><p><code>void drawCenterString(const String &amp;string, int32_t x, int32_t y, IFont* font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const String</td> <td>x</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="drawchar" data-id="drawChar">drawChar</h3> <p>Draw an unicode character.</p><p><strong>Syntax:</strong></p><p><code>size_t drawChar(uint16_t uniCode, int32_t, x, int32_t y, uint8_t font)</code></p><h3 id="drawcircle" data-id="drawCircle">drawCircle</h3> <p>Draw a circle.</p><p><strong>Syntax:</strong></p><p><code>void drawCircle(int32_t x, int32_t y, int32_t r, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>r</td> <td>int32_t</td> <td>radius</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawellipse" data-id="drawEllipse">drawEllipse</h3> <p>Draw ellipse.</p><p><strong>Syntax:</strong></p><p><code>void drawEllipse(int32_t x, int32_t y, int32_t rx, int32_t ry, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>rx</td> <td>int32_t</td> <td>radius X</td></tr> <tr><td>ry</td> <td>int32_t</td> <td>radius Y</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawellipsearc" data-id="drawEllipseArc">drawEllipseArc</h3> <p>Draw a thick elliptical arc.</p><p><strong>Syntax:</strong></p><p><code>void drawEllipseArc(int32_t x, int32_t y, int32_t r0x, int32_t r1x, int32_t r0y, int32_t r1y, float angle0, float angle1, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>center x of arc</td></tr> <tr><td>y</td> <td>int32_t</td> <td>center y of arc</td></tr> <tr><td>r0x</td> <td>int32_t</td> <td>Inner circle radius x</td></tr> <tr><td>r1x</td> <td>int32_t</td> <td>Inner circle radius y</td></tr> <tr><td>r0y</td> <td>int32_t</td> <td>Outer circle radius x</td></tr> <tr><td>r1y</td> <td>int32_t</td> <td>Outer circle radius y</td></tr> <tr><td>angle0</td> <td>float</td> <td>Angle at which the arc starts</td></tr> <tr><td>angle1</td> <td>float</td> <td>Angle at which the arc ends</td></tr> <tr><td>color</td> <td>const T</td> <td>color of line(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="drawfasthline" data-id="drawFastHLine">drawFastHLine</h3> <p>Draw horizontal line.</p><p><strong>Syntax:</strong></p><p><code>void drawFastHLine(int32_t x, int32_t y, int32_t w, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="drawfastvline" data-id="drawFastVLine">drawFastVLine</h3> <p>Draw vertical line.</p><p><strong>Syntax:</strong></p><p><code>void drawFastHLine(int32_t x, int32_t y, int32_t w, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>h</td> <td>int32_t</td> <td>height</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="drawfloat" data-id="drawFloat">drawFloat</h3> <p>Draws a float number.</p><p><strong>Syntax:</strong></p><p><code>size_t drawFloat(float floatNumber, uint8_ dp, int32_t poX, int32_t poY, const IFont* font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>floatNumber</td> <td>float</td> <td>Float number</td></tr> <tr><td>dp</td> <td>uint8_t</td> <td>Number of digits after the decimal point.</td></tr> <tr><td>poX</td> <td>int32_t</td> <td>x</td></tr> <tr><td>poY</td> <td>int32_t</td> <td>y</td></tr> <tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="drawgradienthline" data-id="drawGradientHLine">drawGradientHLine</h3> <p>Draw a horizontal gradient line.</p><p><strong>Syntax:</strong></p><p><code>void drawGradientHLine(int32_t x, int32_t y, int32_t w, const T &amp;colorstart, const T &amp;colorend)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>colorstart</td> <td>const T</td> <td>start color(*1)</td></tr> <tr><td>colorend</td> <td>const T</td> <td>end color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawgradientline" data-id="drawGradientLine">drawGradientLine</h3> <p>Draw a gradient line.</p><p><strong>Syntax:</strong></p><p><code>void drawGradientLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, const T &amp;colorstart, const T &amp;colorend)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>end x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>end y</td></tr> <tr><td>colorstart</td> <td>const T</td> <td>start color(*1)</td></tr> <tr><td>colorend</td> <td>const T</td> <td>end color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawgradientvline" data-id="drawGradientVLine">drawGradientVLine</h3> <p>Draw a vertical gradient line.</p><p><strong>Syntax:</strong></p><p><code>void drawGradientVLine(int32_t x, int32_t y, int32_t h, const T &amp;colorstart, const T &amp;colorend)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>h</td> <td>int32_t</td> <td>height</td></tr> <tr><td>colorstart</td> <td>const T</td> <td>start color(*1)</td></tr> <tr><td>colorend</td> <td>const T</td> <td>end color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawjpg" data-id="drawJpg">drawJpg</h3> <p>Draw JPG data. File or HTTPStream can be specified for data.</p><p><strong>Syntax:</strong></p><ul><li>FileSystem</li></ul> <p><code>void drawJpg(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>path</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>Stream</li></ul> <p><code>void drawJpg(Stream *dataSource, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>Stream*</td> <td>Stream object</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>data</li></ul> <p><code>void drawJpg(const uint8_t *data, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>const uint8_t*</td> <td>bmp data</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawjpgfile" data-id="drawJpgFile">drawJpgFile</h3> <p>Draw a JPG image from file.</p><p><strong>Syntax:</strong></p><p><code>void drawJpgFile(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>pat</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawjpgurl" data-id="drawJpgUrl">drawJpgUrl</h3> <p>Draw an JPG image from URL.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Notice:</strong><br>This function can be used by writing #include &lt;HTTPClient.h&gt; before #include &lt;M5GFX.h&gt;.</div></div><p><strong>Syntax:</strong></p><p><code>void drawJpgUrl(const String &amp;url, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>url</td> <td>const String</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawline" data-id="drawLine">drawLine</h3> <p>Draw a line.</p><p><strong>Syntax:</strong></p><p><code>void drawLine(int32_t x0, int32_t y0, int32_t x1, int32_t y1, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>end x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>end y</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="drawnumber" data-id="drawNumber">drawNumber</h3> <p>Draws a long number.</p><p><strong>Syntax:</strong></p><p><code>size_t drawNumber(long long_num,int32_t poX, int32_t poY, const IFont* font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>long_num</td> <td>long</td> <td>long number</td></tr> <tr><td>poX</td> <td>int32_t</td> <td>x</td></tr> <tr><td>poY</td> <td>int32_t</td> <td>y</td></tr> <tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="drawpixel" data-id="drawPixel">drawPixel</h3> <p>Draw a pixel.</p><p><strong>Syntax:</strong></p><p><code>void drawPixel(int32_t x, int32_t y, const int &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>color</td> <td>const int</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="drawpng" data-id="drawPng">drawPng</h3> <p>Draw PNG data. File or HTTPStream can be specified for data.</p><p><strong>Syntax:</strong></p><ul><li>FileSystem</li></ul> <p><code>void drawPng(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>path</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>Stream</li></ul> <p><code>void drawPng(Stream *dataSource, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>Stream*</td> <td>Stream object</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>data</li></ul> <p><code>void drawPng(const uint8_t *data, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>const uint8_t*</td> <td>bmp data</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawpngfile" data-id="drawPngFile">drawPngFile</h3> <p>Draw a PNG image from file.</p><p><strong>Syntax:</strong></p><p><code>void drawPngFile(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>pat</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawpngurl" data-id="drawPngUrl">drawPngUrl</h3> <p>Draw a PNG image from URL.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Notice:</strong><br>This function can be used by writing #include &lt;HTTPClient.h&gt; before #include &lt;M5GFX.h&gt;.</div></div><p><strong>Syntax:</strong></p><p><code>void drawPngUrl(const String &amp;url, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>url</td> <td>const String</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawqoi" data-id="drawQoi">drawQoi</h3> <p>Draw Qoi data. File or HTTPStream can be specified for data.</p><p><strong>Syntax:</strong></p><ul><li>FileSystem</li></ul> <p><code>void drawQoi(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>path</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>Stream</li></ul> <p><code>void drawQoi(Stream *dataSource, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>Stream*</td> <td>Stream object</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><ul><li>data</li></ul> <p><code>void drawQoi(const uint8_t *data, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dataSource</td> <td>const uint8_t*</td> <td>bmp data</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawqoifile" data-id="drawQoiFile">drawQoiFile</h3> <p>Draw a Qoi image from file.</p><p><strong>Syntax:</strong></p><p><code>void drawQoiFile(fs::FS &amp;fs,const char *path, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS</td> <td>SPIFFS or SD</td></tr> <tr><td>pat</td> <td>const char*</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawqoiurl" data-id="drawQoiUrl">drawQoiUrl</h3> <p>Draw a Qoi image from URL.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Notice:</strong><br>This function can be used by writing #include &lt;HTTPClient.h&gt; before #include &lt;M5GFX.h&gt;.</div></div><p><strong>Syntax:</strong></p><p><code>void drawPngQoi(const String &amp;url, int32_t x = 0, y = 0, maxWidth = 0, maxHeight = 0, int32_t offX = 0, int32_t offY = 0, float scale_x = 1.0f, float scale_y = 1.0f, datum_t datum = datum_t::top_left )</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>url</td> <td>const String</td> <td>filepath</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>maxWidth</td> <td>int32_t</td> <td>width</td></tr> <tr><td>maxHeight</td> <td>int32_t</td> <td>height</td></tr> <tr><td>offX</td> <td>int32_t</td> <td>offset X</td></tr> <tr><td>offY</td> <td>int32_t</td> <td>offset Y</td></tr> <tr><td>scaleX</td> <td>float</td> <td>scale X</td></tr> <tr><td>scaleY</td> <td>float</td> <td>scale Y</td></tr> <tr><td>datum</td> <td>datum_t</td> <td>image datum(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-imagedatum">
+        About ImageDatum
+    </a></p><h3 id="drawrect" data-id="drawRect">drawRect</h3> <p>Draw a rectangle.</p><p><strong>Syntax:</strong></p><p><code>void drawRect(int32_t x, int32_t y, int32_t w, int32_t h, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rect width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rect height</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawrightstring" data-id="drawRightString">drawRightString</h3> <p>Draw strings right-aligned.</p><p><strong>Syntax:</strong></p><p><code>void drawRightString(const String &amp;string, int32_t x, int32_t y, IFont* font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const String</td> <td>String</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="drawroundrect" data-id="drawRoundRect">drawRoundRect</h3> <p>Draw a rectangle with rounded corners.</p><p><strong>Syntax:</strong></p><p><code>void drawRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rect width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rect height</td></tr> <tr><td>r</td> <td>int32_t</td> <td>radius</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="drawstring" data-id="drawString">drawString</h3> <p>Draw strings.</p><p><strong>Syntax:</strong></p><p><code>void drawString(const char* string, int32_t x, int32_t y, const IFont* font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const char*</td> <td>String</td></tr> <tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">setTextDatum</span>(middle_center);
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">drawString</span>(<span class="hljs-string">"Text"</span>, x, y);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  display.setTextDatum(middle_center);
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.drawString(&quot;Text&quot;, x, y);
+}
+
+void loop() {
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="drawtriangle" data-id="drawTriangle">drawTriangle</h3> <p>Draw a triangle by specifying three points.</p><p><strong>Syntax:</strong></p><p><code>void drawTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>point0 x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>point0 y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>point1 x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>point1 y</td></tr> <tr><td>x2</td> <td>int32_t</td> <td>point2 x</td></tr> <tr><td>y2</td> <td>int32_t</td> <td>point2 y</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="effect" data-id="effect">effect</h3> <p>Effects the specified rectangle range using a user-defined transformation function.</p><p><strong>Syntax:</strong></p><p><code>void effect(int32_t x, int32_t y, int32_t w, int32_t h, TFunc&amp;&amp; effector)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>height</td></tr> <tr><td>effector</td> <td>TFunc&amp;&amp;</td> <td>transformation function</td></tr></tbody></table></div> <h3 id="endtransaction" data-id="endTransaction">endTransaction</h3> <p>It is pared with
+    <a href="#starttransaction">
+        startTransaction()
+    </a></p><p><strong>Syntax:</strong></p><p><code>void endTransaction()</code></p><h3 id="endwrite" data-id="endWrite">endWrite</h3> <p>It is paired with
+    <a href="#startwrite">
+        startWrite()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void endWrite()</code></p><h2 id="f - h" data-id="f - h">f - h</h2> <h3 id="fillaffine" data-id="fillAffine">fillAffine</h3> <p>Fill affine transformed area.</p><p><code>void fillAffine(const float matrix[6], int32_t w, int32_t h, const T&amp; color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>color</td> <td>const T&amp; (*1)</td> <td>Color</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="fillarc" data-id="fillArc">fillArc</h3> <p>Draw a filled arc.</p><p><strong>Syntax:</strong></p><p><code>void fillArc(int32_t x, int32_t y, int32_t r0, int32_t r1, float angle0, float angle1, const int &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>center x of arc</td></tr> <tr><td>y</td> <td>int32_t</td> <td>center y of arc</td></tr> <tr><td>r0</td> <td>int32_t</td> <td>Inner circle radius</td></tr> <tr><td>r1</td> <td>int32_t</td> <td>Outer circle radius</td></tr> <tr><td>angle0</td> <td>float</td> <td>Angle at which the arc starts</td></tr> <tr><td>angle1</td> <td>float</td> <td>Angle at which the arc ends</td></tr> <tr><td>color</td> <td>const T&amp;(*1)</td> <td>fill color</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">fillArc</span>(x, y, <span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">20</span>, <span class="hljs-number">240</span>, TFT_WHITE);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.fillArc(x, y, 10, 20, 20, 240, TFT_WHITE);
+}
+
+void loop() {
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="fillcircle" data-id="fillCircle">fillCircle</h3> <p>Draw a filled circle.</p><p><strong>Syntax:</strong></p><p><code>void fillCircle(int32_t x, int32_t y, int32_t r, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>r</td> <td>int32_t</td> <td>radius</td></tr> <tr><td>color</td> <td>const T&amp;</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="fillellipse" data-id="fillEllipse">fillEllipse</h3> <p>Draw a filled ellipse.</p><p><strong>Syntax:</strong></p><p><code>void fillEllipse(int32_t x, int32_t y, int32_t rx, int32_t ry, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>rx</td> <td>int32_t</td> <td>radius X</td></tr> <tr><td>ry</td> <td>int32_t</td> <td>radius Y</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="fillellipsearc" data-id="fillEllipseArc">fillEllipseArc</h3> <p>Fill a thick elliptical arc.</p><p><strong>Syntax:</strong></p><p><code>void fillEllipseArc(int32_t x, int32_t y, int32_t r0x, int32_t r1x, int32_t r0y, int32_t r1y, float angle0, float angle1, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>center x of arc</td></tr> <tr><td>y</td> <td>int32_t</td> <td>center y of arc</td></tr> <tr><td>r0x</td> <td>int32_t</td> <td>Inner circle radius x</td></tr> <tr><td>r1x</td> <td>int32_t</td> <td>Inner circle radius y</td></tr> <tr><td>r0y</td> <td>int32_t</td> <td>Outer circle radius x</td></tr> <tr><td>r1y</td> <td>int32_t</td> <td>Outer circle radius y</td></tr> <tr><td>angle0</td> <td>float</td> <td>Angle at which the arc starts</td></tr> <tr><td>angle1</td> <td>float</td> <td>Angle at which the arc ends</td></tr> <tr><td>color</td> <td>const T</td> <td>color of line(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="fillrect" data-id="fillRect">fillRect</h3> <p>Draw a filled rectangle.</p><p><strong>Syntax:</strong></p><p><code>void fillRect(int32_t x, int32_t y, int32_t w, int32_t h, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rect width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rect height</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr> <tr><td>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></td> <td></td> <td></td></tr></tbody></table></div> <h3 id="fillrectalpha" data-id="fillRectAlpha">fillRectAlpha</h3> <p>Draw a filled rectangle that is transparent.</p><p><strong>Syntax:</strong></p><p><code>void fillRectAlpha(int32_t x, int32_t y, int32_t w, int32_t h, uint8_t alpha, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rect width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rect height</td></tr> <tr><td>alpha</td> <td>uint8_t</td> <td>0 transparent - 255 opaque</td></tr> <tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">fillRect</span>(x - <span class="hljs-number">10</span>, y - <span class="hljs-number">10</span>, <span class="hljs-number">50</span>, <span class="hljs-number">50</span>, TFT_WHITE);
+  display.<span class="hljs-built_in">fillRectAlpha</span>(x, y, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>, <span class="hljs-number">100</span>, TFT_BLACK);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.fillRect(x - 10, y - 10, 50, 50, TFT_WHITE);
+  display.fillRectAlpha(x, y, 30, 30, 100, TFT_BLACK);
+}
+
+void loop()
+{
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="fillroundrect" data-id="fillRoundRect">fillRoundRect</h3> <p>Draw a filled rectangle with rounded corners.</p><p><strong>Syntax:</strong></p><p><code>void fillRoundRect(int32_t x, int32_t y, int32_t w, int32_t h, int32_t r, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Rect width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Rect height</td></tr> <tr><td>r</td> <td>int32_t</td> <td>corner radius</td></tr> <tr><td>color</td> <td>const T&amp;</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+  <span class="hljs-keyword">uint16_t</span> x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  <span class="hljs-keyword">uint16_t</span> y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">fillRoundRect</span>(x, y, <span class="hljs-number">30</span>, <span class="hljs-number">30</span>, <span class="hljs-number">5</span>, TFT_WHITE);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+  uint16_t x = display.width() / 2;
+  uint16_t y = display.height() / 2;
+  display.fillRoundRect(x, y, 30, 30, 5, TFT_WHITE);
+}
+
+void loop()
+{
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="fillscreen" data-id="fillScreen">fillScreen</h3> <p>Fill the screen.</p><p><strong>Syntax:</strong></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>const T</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="filltriangle" data-id="fillTriangle">fillTriangle</h3> <p>Draw a filled triangle.</p><p><strong>Syntax:</strong></p><p><code>void fillTriangle(int32_t x0, int32_t y0, int32_t x1, int32_t y1, int32_t x2, int32_t y2, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x0</td> <td>int32_t</td> <td>point0 x</td></tr> <tr><td>y0</td> <td>int32_t</td> <td>point0 y</td></tr> <tr><td>x1</td> <td>int32_t</td> <td>point1 x</td></tr> <tr><td>y1</td> <td>int32_t</td> <td>point1 y</td></tr> <tr><td>x2</td> <td>int32_t</td> <td>point2 x</td></tr> <tr><td>y2</td> <td>int32_t</td> <td>point2 y</td></tr> <tr><td>color</td> <td>const T&amp;</td> <td>color(*1)</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="floodfill" data-id="floodFill">floodFill</h3> <p>Fills the approximate gamut of the specified coordinates.</p><p><strong>Syntax:</strong></p><p><code>void floodFill(uint32_t x, uint32_t y, const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>point y</td></tr> <tr><td>color</td> <td>const T</td> <td>fill color</td></tr></tbody></table></div> <h3 id="fontheight" data-id="fontHeight">fontHeight</h3> <p>Returns the height of the specified font.</p><p><code>int32_t fontHeight(uint8_t font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="fontwidth" data-id="fontWidth">fontWidth</h3> <p>Returns the width of the specified font.</p><p><code>int32_t fontHeight(uint8_t font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>font</td> <td>IFont* (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Fonts
+    </a></p><h3 id="getattribute" data-id="getAttribute">getAttribute</h3> <p>Get the attribute.</p><p><strong>Syntax:</strong></p><p><code>uint8_t getAttribute(attribute_t attr_id)</code></p><h3 id="getbasecolor" data-id="getBaseColor">getBaseColor</h3> <p>Get the color value set by
+    <a href="#setbasecolor">
+        setBaseColor()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>uint32_t getBaseColor()</code></p><h3 id="getboard" data-id="getBoard">getBoard</h3> <p>Get Board.</p><p><strong>Syntax:</strong></p><p><code>uint8_t getBoard()</code></p><p>*1.
+    <a href="./m5gfx_appendix#enum-lgfxboardsboardt">
+        enum board_t
+    </a></p><h3 id="getbrightness" data-id="getBrightness">getBrightness</h3> <p>Get the value set by
+    <a href="#setbrightness">
+        setBrightness
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>uint8_t getBrightness()</code></p><h3 id="getcliprect" data-id="getClipRect">getClipRect</h3> <p>Get the coordinate parameters(x,y,w,h) set by
+    <a href="#setcliprect">
+        setClipRect()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void getClipRect(int32_t *x, int32_t *y, int32_t *w, int32_t *h)</code></p><h3 id="getcolordepth" data-id="getColorDepth">getColorDepth</h3> <p>Get the value set by
+    <a href="#setcolordepth">
+        setColorDepth()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>color_depth_t getColorDepth()</code></p><p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About ColorDepth
+    </a></p><h3 id="getcursorx" data-id="getCursorX">getCursorX</h3> <p>Get current cursor X position.</p><p><strong>Syntax:</strong></p><p><code>int32_t getCursorX()</code></p><h3 id="getcursory" data-id="getCursorY">getCursorY</h3> <p>Get current cursor Y position.</p><p><strong>Syntax:</strong></p><p><code>int32_t getCursorY()</code></p><h3 id="getepdmode" data-id="getEpdMode">getEpdMode</h3> <p>Get the value set by
+    <a href="#setepdmode">
+        setEpdMode()
+    </a>.(M5Paper only)</p><p><strong>Syntax:</strong></p><p><code>epd_mode_t getEpdMode()</code></p><p>*1.
+    <a href="./m5gfx_appendix#epdmodet">
+        epd_mode_t
+    </a></p><h3 id="getfont" data-id="getFont">getFont</h3> <p>Get the font set by
+    <a href="#setfont">
+        setFont()
+    </a>.</p><p><code>const IFont* getFont()</code></p><p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        about font
+    </a></p><h3 id="getinstance" data-id="getInstance">getInstance</h3> <p>Get an instance of M5GFX.</p><p><strong>Syntax:</strong></p><p><code>M5GFX* getInstance()</code></p><h3 id="getinvert" data-id="getInvert">getInvert</h3> <p>Get the value set by
+    <a href="#invertdisplay">
+        invertDisplay()
+    </a>
+    Get Invert value of the panel.</p><p><strong>Syntax:</strong></p><p><code>bool getInvert()</code></p><h3 id="getpalette" data-id="getPalette">getPalette</h3> <p>Get palette information.</p><p><strong>Syntax:</strong></p><p><code>RGBColor* getPalette()</code></p><h3 id="getpalettecount" data-id="getPaletteCount">getPaletteCount</h3> <p>Get count of palette.</p><p><strong>Syntax:</strong></p><p><code>uint32_t getPaletteCount()</code></p><h3 id="getpanel" data-id="getPanel">getPanel</h3> <p>Get panel of device.</p><p><strong>Syntax:</strong></p><p><code>Panel_Device* getPanel()</code></p><h3 id="getpivotx" data-id="getPivotX">getPivotX</h3> <p>Get X value set by
+    <a href="#setpivot">
+        setPivot
+    </a></p><p><strong>Syntax:</strong></p><p><code>float getPivotX()</code></p><h3 id="getpivoty" data-id="getPivotY">getPivotY</h3> <p>Get Y value set by
+    <a href="#setpivot">
+        setPivot
+    </a></p><p><strong>Syntax:</strong></p><p><code>float getPivotY()</code></p><h3 id="getrawcolor" data-id="getRawColor">getRawColor</h3> <p>Get the value set by
+    <a href="#setrawcolor">
+        setRawColor()
+    </a>.</p><p><code>uint32_t getRawColor()</code></p><h3 id="getrotation" data-id="getRotation">getRotation</h3> <p>Get the value set by
+    <a href="#setrotation">
+        setRotation()
+    </a></p><p><code>uint8_t getRotation()</code></p><h3 id="getscrollrect" data-id="getScrollRect">getScrollRect</h3> <p>Get information about the
+    <a href="#setscrollrect">
+        setScrollRect()
+    </a>.</p><p><code>void getScrollRect(int32_t *x, int32_t *y, int32_t *w, int32_t *h)</code></p><h3 id="getstartcount" data-id="getStartCount">getStartCount</h3> <p>Get the count of the panel has
+    <a href="#startwrite">
+        startWrite()
+    </a>.</p><p><code>uint32_t getStartCount()</code></p><h3 id="getswapbytes" data-id="getSwapBytes">getSwapBytes</h3> <p>Get status of
+    <a href="#setswapbytes">
+        setSwapBytes()
+    </a>.</p><p><code>bool getSwapBytes()</code></p><h3 id="gettextdatum" data-id="getTextDatum">getTextDatum</h3> <p>Get TextDatum.
+    <a href="#settextdatum">
+        setTextDatum()
+    </a></p><p><strong>Syntax:</strong></p><p><code>textdatum_t getTextDatum()</code></p><p>*1.
+    <a href="./m5gfx_appendix#about-textdatum">
+        About TextDatum
+    </a></p><h3 id="gettextpadding" data-id="getTextPadding">getTextPadding</h3> <p>Get TextPadding.</p><p><strong>Syntax:</strong></p><p><code>uint32_t getTextPadding()</code></p><h3 id="gettextsizex" data-id="getTextSizeX">getTextSizeX</h3> <p>Get the width set by
+    <a href="#settextsize">
+        setTextSize()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>float getTextSizeX()</code></p><h3 id="gettextsizey" data-id="getTextSizeY">getTextSizeY</h3> <p>Get the height set by
+    <a href="#settextsize">
+        setTextSize()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>float getTextSizeY()</code></p><h3 id="gettextstyle" data-id="getTextStyle">getTextStyle</h3> <p>Get the information set by
+    <a href="#settextstyle">
+        setTextStyle()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>TextSytle&amp; getTextStyle()</code></p><h3 id="gettouch" data-id="getTouch">getTouch</h3> <p>Get information when touching the touch panel.</p><p><strong>Syntax:</strong></p><p><code>uint_fast8_t getTouch(touch_point_t *tp, uint_fast8_t count = 1)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>tp</td> <td>touch_pont_t*</td> <td>Return value of touch point</td></tr> <tr><td>count</td> <td>uint_fast8_t</td> <td>count</td></tr></tbody></table></div> <h3 id="gettouchraw" data-id="getTouchRaw">getTouchRaw</h3> <p>Get raw information when touching the touch panel.</p><p><strong>Syntax:</strong></p><p><code>uint_fast8_t getTouchRaw(touch_point_t *tp, uint_fast8_t count = 1)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>tp</td> <td>touch_pont_t*</td> <td>Return value of touch point</td></tr> <tr><td>count</td> <td>uint_fast8_t</td> <td>count</td></tr></tbody></table></div> <h3 id="haspalette" data-id="hasPalette">hasPalette</h3> <p>Whether a color palette exists.</p><p><strong>Syntax:</strong></p><p><code>bool hasPalette()</code></p><h3 id="height" data-id="height">height</h3> <p>Get height of panel.</p><p><strong>Syntax:</strong></p><p><code>int_fast16_t height()</code></p><h2 id="i - q" data-id="i - q">i - q</h2> <h3 id="init" data-id="init">init</h3> <p>Initialize panel.</p><p><strong>Syntax:</strong></p><p><code>void init()</code></p><h3 id="initdma" data-id="initDMA">initDMA</h3> <p>Initialize DMA.</p><p><strong>Syntax:</strong></p><p><code>void initDMA</code></p><h3 id="invertdisplay" data-id="invertDisplay">invertDisplay</h3> <p>Set whether the brightness and color tones of the screen are inverted for output. (Negative-Positive Invert)</p><p><strong>Syntax:</strong></p><p><code>void invertDisplay(bool invert)</code></p><h3 id="isbusshared" data-id="isBusShared">isBusShared</h3> <p>Whether Bus is shared.</p><p><strong>Syntax:</strong></p><p><code>bool isBusShared()</code></p><h3 id="isepd" data-id="isEPD">isEPD</h3> <p>Whether Panel is an EPD.</p><p><strong>Syntax:</strong></p><p><code>bool isEPD()</code></p><h3 id="isreadable" data-id="isReadable">isReadable</h3> <p>Whether Panel is readable or not.</p><p><strong>Syntax:</strong></p><p><code>bool isReadable()</code></p><h3 id="isspishared" data-id="isSPIShared">isSPIShared</h3> <p>Whether SPI Bus is shared.</p><p><strong>Syntax:</strong></p><p><code>bool isSPIShared()</code></p><h3 id="loadfont" data-id="loadFont">loadFont</h3> <p>Load font data.</p><p><strong>Syntax:</strong></p><p><code>bool loadFont(const uint8_t *array)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>array</td> <td>const uint8_t*</td> <td>VLW font data</td></tr></tbody></table></div> <p><code>bool loadFont(fs::FS &amp;fs, const char *path)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>fs</td> <td>fs::FS&amp;</td> <td>FileSystem(SD or SPIFFS)</td></tr> <tr><td>path</td> <td>const char*</td> <td>file path</td></tr></tbody></table></div> <h3 id="paint" data-id="paint">paint</h3> <p>Same function
+    <a href="#floodfill">
+        floodFill()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void paint(int32_t x, int32_t y, const T&amp; color)</code></p><h3 id="panel" data-id="panel">panel</h3> <p>Get panel of device.</p><p><strong>Syntax:</strong></p><p><code>Panel_Device* panel()</code></p><h3 id="popstate" data-id="popState">popState</h3> <p>Temporarily saves text information. Restore is done by
+    <a href="#pushstate">
+        pushState()
+    </a>.</p><ul><li>Information to be temporarily evacuated</li></ul> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>gfxFont</td> <td>IFont *</td> <td></td></tr> <tr><td>style</td> <td>TextStyle (*1)</td> <td></td></tr> <tr><td>metrics</td> <td>FontMetrics (*2)</td> <td></td></tr> <tr><td>cursor_x</td> <td>int32_t</td> <td></td></tr> <tr><td>cursor_y</td> <td>int32_t</td> <td></td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#struct-textstyle">
+        struct TextStyle
+    </a>
+    *2.
+    <a href="./m5gfx_appendix#struct-fontmetrics">
+        struct FontMetrics
+    </a></p><p><strong>Syntax:</strong></p><p><code>void popState()</code></p><h3 id="powersave" data-id="powerSave">powerSave</h3> <p>Set the status of powerSave.</p><p><strong>Syntax:</strong></p><p><code>void powerSave(bool flg)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>flg</td> <td>bool</td> <td></td></tr></tbody></table></div> <h3 id="powersaveoff" data-id="powerSaveOff">powerSaveOff</h3> <p>Set the status of powerSave to Off.</p><p><strong>Syntax:</strong></p><p><code>void powerSaveOff()</code></p><h3 id="powersaveon" data-id="powerSaveOn">powerSaveOn</h3> <p>Set the status of powerSave to On.</p><p><strong>Syntax:</strong></p><p><code>void powerSaveOn()</code></p><h3 id="print" data-id="print">print</h3> <p>Output text at the cursor position. Arduino Print.h compatible.</p><p><strong>Syntax:</strong></p><p><code>size_t print(...)</code></p><h3 id="printf" data-id="printf">printf</h3> <p>Output text at the cursor position. Arduino LibPrint.h compatible.</p><p><strong>Syntax:</strong></p><p><code>size_t printf(...)</code></p><h3 id="println" data-id="println">println</h3> <p>Output text at the cursor position. Arduino Print.h compatible.</p><p><strong>Syntax:</strong></p><p><code>size_t print(...)</code></p><h3 id="progressbar" data-id="progressBar">progressBar</h3> <p>Displays a progress bar. Available in blue(0x09F1) only.</p><p><strong>Syntax:</strong></p><p><code>void progressBar(int x, int y, int w, int h, uint8_t val)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int</td> <td>point x</td></tr> <tr><td>y</td> <td>int</td> <td>point y</td></tr> <tr><td>w</td> <td>int</td> <td>width</td></tr> <tr><td>h</td> <td>int</td> <td>height</td></tr> <tr><td>value</td> <td>uint8_t</td> <td>value( 0 - 100)</td></tr></tbody></table></div> <h3 id="pushblock" data-id="pushBlock">pushBlock</h3> <p>Draw lines in the rectangular area allocated by
+    <a href="#setwindow">
+        setWindow()
+    </a> or
+    <a href="#setaddrwindow">
+        setAddrWindow()
+    </a>, specifying the color and width of each line.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void pushBlock(const T&amp; color, uint32_t length)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>説明</th></tr></thead> <tbody><tr><td>color</td> <td>const T&amp;</td> <td>Color(*1)</td></tr> <tr><td>length</td> <td>uint32_t</td> <td>Length</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+
+M5GFX display;
+<span class="hljs-keyword">int32_t</span> x;
+<span class="hljs-keyword">int32_t</span> y;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+
+  x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+
+  display.<span class="hljs-built_in">startWrite</span>();
+  display.<span class="hljs-built_in">setWindow</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, x - <span class="hljs-number">1</span> , y);
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>; i&lt;y; i++) {
+    display.<span class="hljs-built_in">pushBlock</span>(TFT_RED, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">pushBlock</span>(TFT_BLUE, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">pushBlock</span>(TFT_GREEN, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">pushBlock</span>(TFT_YELLOW, x / <span class="hljs-number">4</span>);
+  }
+  display.<span class="hljs-built_in">endWrite</span>();
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+
+M5GFX display;
+int32_t x;
+int32_t y;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+
+  x = display.width() / 2;
+  y = display.height() / 2;
+
+  display.startWrite();
+  display.setWindow(0, 0, x - 1 , y);
+  for (int i=0; i<y; i++) {
+    display.pushBlock(TFT_RED, x / 4);
+    display.pushBlock(TFT_BLUE, x / 4);
+    display.pushBlock(TFT_GREEN, x / 4);
+    display.pushBlock(TFT_YELLOW, x / 4);
+  }
+  display.endWrite();
+}
+
+
+void loop()
+{
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="pushimage" data-id="pushImage">pushImage</h3> <p>Push image data.</p><p><strong>Syntax:</strong></p><p><code>void pushImage(int32_t x, int32_t y, int32_t w, int32_t h, const T* data)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr></tbody></table></div> <p><code>void pushImage(const float matrix[6], int32_t w, int32_t h, const T* data, const T2&amp; transparent)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>const T2&amp;</td> <td>Color of transparent</td></tr></tbody></table></div> <p><code>void pushImage(const float matrix[6], int32_t w, int32_t h, const T* data, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><p><code>void pushImage(const float matrix[6], int32_t w, int32_t h, const T* data, uint32_t transparent, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>start point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>start point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>uint32_t</td> <td>Color of transparent</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><h3 id="pushimageaffine" data-id="pushImageAffine">pushImageAffine</h3> <p>Affine transformation are performed when drawing images.</p><p><strong>Syntax:</strong></p><p><code>void pushImageAffine(const float matrix[6], int32_t w, int32_t h, const T* data)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr></tbody></table></div> <p><code>void pushImageAffine(const float matrix[6], int32_t w, int32_t h, const T* data, const T2&amp; transparent)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>const T2&amp;</td> <td>Color of transparent</td></tr></tbody></table></div> <p><code>void pushImageAffine(const float matrix[6], int32_t w, int32_t h, const T* data, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T (*2)</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><p><code>void pushImageAffine(const float matrix[6], int32_t w, int32_t h, const T* data, uint32_t transparent, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>uint32_t</td> <td>Color of transparent</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T (*2)</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><h3 id="pushimageaffinewithaa" data-id="pushImageAffineWithAA">pushImageAffineWithAA</h3> <p>Affine transformation and anti-aliasing are performed when drawing images.</p><p><strong>Syntax:</strong></p><p><code>void pushImageAffineWithAA(const float matrix[6], int32_t w, int32_t h, const T* data)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr></tbody></table></div> <p><code>void pushImageAffineWithAA(const float matrix[6], int32_t w, int32_t h, const T* data, const T2&amp; transparent)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>const T2&amp;</td> <td>Color of transparent</td></tr></tbody></table></div> <p><code>void pushImageAffineWithAA(const float matrix[6], int32_t w, int32_t h, const T* data, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T (*2)</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><p><code>void pushImageAffineWithAA(const float matrix[6], int32_t w, int32_t h, const T* data, uint32_t transparent, color_depth_t depth, const T* palette)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>matrix</td> <td>const float[6]</td> <td>Matrix with 6 elements</td></tr> <tr><td>w</td> <td>int32_t</td> <td>Image width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>Image height</td></tr> <tr><td>data</td> <td>const T*</td> <td>Image data</td></tr> <tr><td>transparent</td> <td>uint32_t</td> <td>Color of transparent</td></tr> <tr><td>depth</td> <td>color_depth_t (*1)</td> <td>Color depth</td></tr> <tr><td>palette</td> <td>const T (*2)</td> <td>Color palette</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-color-depth">
+        About Color Depth
+    </a></p><h3 id="pushpixels" data-id="pushPixels">pushPixels</h3> <p>Draw pixels within the clipped area set by
+    <a href="#setwindow">
+        setWindow()
+    </a> or
+    <a href="#setaddrwindow">
+        setAddrWindow()
+    </a>.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void pushPixels(T* data, int32_t len)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr></tbody></table></div> <p><code>void pushPixels(T* data, int32_t len, bool swap)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr> <tr><td>swap</td> <td>bool</td> <td>Swap bytes</td></tr></tbody></table></div> <h3 id="pushpixelsdma" data-id="pushPixelsDMA">pushPixelsDMA</h3> <p>Draw pixels within the clipped area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void pushPixelsDMA(T* data, int32_t len)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr></tbody></table></div> <p><code>void pushPixelsDMA(T* data, int32_t len, bool swap)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr> <tr><td>swap</td> <td>bool</td> <td>Swap bytes</td></tr></tbody></table></div> <h3 id="pushstate" data-id="pushState">pushState</h3> <p>Restore the text information that had been temporarily retired with
+    <a href="#popstate">
+        popState()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void pushState()</code></p><h3 id="qrcode" data-id="qrcode">qrcode</h3> <p>Generate qrcode from a string.</p><p><strong>Syntax:</strong></p><p><code>void qrcode(const char *string, int32_t x, int32_t y, int32_t w, uint8_t version)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const char*</td> <td>String to convert</td></tr> <tr><td>x</td> <td>int32_t</td> <td>point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>version</td> <td>uint8_t</td> <td>version of qrcode(1 - 40)</td></tr></tbody></table></div> <h2 id="r - s" data-id="r - s">r - s</h2> <h3 id="readdata16" data-id="readData16">readData16</h3> <p>Reads 16 bits of data from the panel</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>uint16_t readData16(uint8_t index=0)</code></p><h3 id="readdata32" data-id="readData32">readData32</h3> <p>Reads 32 bits of data from the panel</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>uint32_t readData32(uint8_t index=0)</code></p><h3 id="readdata8" data-id="readData8">readData8</h3> <p>Reads 8 bits of data from the panel</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>uint8_t readData8(uint8_t index=0)</code></p><h3 id="readpixel" data-id="readPixel">readPixel</h3> <p>Reads the color code of the specified coordinates.
+    Color code is RGB565.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>uint16_t readPixel(int32_t x, int32_t y)</code></p><h3 id="readpixelrgb" data-id="readPixelRGB">readPixelRGB</h3> <p>Reads the color code of the specified coordinates.
+    Color code is RGB888.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>RGBColor readPixelRGB(int32_t x, int32_t y)</code></p><h3 id="readrect" data-id="readRect">readRect</h3> <p>Loads the color data for the specified rectangular area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void readRect(int32_t x, int32_t y, int32_t w, int32_t h, T* data)</code></p><h3 id="readrectrgb" data-id="readRectRGB">readRectRGB</h3> <p>Loads the color data for the specified rectangular area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>note:</strong><br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void readRectRGB(int32_t x, int32_t y, int32_t w, int32_t h, RGBColor* data)</code></p><h3 id="scroll" data-id="scroll">scroll</h3> <p>Scroll the displayed screen.</p><p><strong>Syntax:</strong></p><p><code>void scroll(int_fast16_t dx, int_fast16_t dy)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>dx</td> <td>int_fast16_t</td> <td>Amount of X-axis movement</td></tr> <tr><td>dy</td> <td>int_fast16_t</td> <td>Amount of Y-axis movement</td></tr></tbody></table></div> <pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+
+M5GFX display;
+<span class="hljs-keyword">uint16_t</span> x;
+<span class="hljs-keyword">uint16_t</span> y;
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+  x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">drawCenterString</span>(<span class="hljs-string">"scroll"</span>, x, y, &amp;fonts::lgfxJapanGothic_24);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">-10</span>; i&lt;=<span class="hljs-number">10</span>; i+=<span class="hljs-number">1</span>) {
+    display.<span class="hljs-built_in">scroll</span>(<span class="hljs-number">0</span>, i);
+  }
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+
+M5GFX display;
+uint16_t x;
+uint16_t y;
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+  x = display.width() / 2;
+  y = display.height() / 2;
+  display.drawCenterString(&quot;scroll&quot;, x, y, &amp;fonts::lgfxJapanGothic_24);
+}
+
+void loop()
+{
+  for (int i=-10; i<=10; i+=1) {
+    display.scroll(0, i);
+  }
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="setaddrwindow" data-id="setAddrWindow">setAddrWindow</h3> <p>Specifies the rectangle range to which
+    <a href="#writepixels">
+        writePixels()
+    </a>,
+    <a href="#pushpixels">
+        pushPixels()
+    </a>, etc. are to be drawn.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>notice:</strong><br>Same as
+    <a href="#setwindow">
+        setWindow
+    </a>, but the arguments are different. setAddrWindows checks for off-screen overflow, while setWindow does not.</div></div><p><strong>Syntax:</strong></p><p><code>void setAddrWindow(int32_t x, int32_t y, int32_t w, int32_t h)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>説明</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>height</td></tr></tbody></table></div> <h3 id="setautodisplay" data-id="setAutoDisplay">setAutoDisplay</h3> <p>for M5Paper, CoreInk, UnitOLED only.
+    Set a flag to automatically display on the panel at the time of drawing without executing
+    <a href="#display">
+        display()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void setAutoDisplay(bool auto_display)</code></p><h3 id="setbasecolor" data-id="setBaseColor">setBaseColor</h3> <p>Set the base color.
+    The color outside the drawing area can be specified when using the scroll function.</p><p><strong>Syntax:</strong></p><p><code>void setBaseColor(T color) </code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>T (*1)</td> <td>Base color</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="setbrightness" data-id="setBrightness">setBrightness</h3> <p>Specifies the brightness of the display panel.</p><p><strong>Syntax:</strong></p><p><code>void setBrightness(uint8_t brightness)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>brightness</td> <td>unit8_t</td> <td>display brightness</td></tr></tbody></table></div> <h3 id="setcliprect" data-id="setClipRect">setClipRect</h3> <p>Specifying a drawing range with this function limits the drawing to within a rectangular area.</p><p><strong>Syntax:</strong></p><p><code>void setClipRect(int32_t x, int32_t y, int32_t w, int32_t h)</code></p><h3 id="setcolor" data-id="setColor">setColor</h3> <p>Specify the drawing color for draw-type functions.</p><p><strong>Syntax:</strong></p><p><code>void setColor(const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>T (*1)</td> <td>Base color</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="setcolordepth" data-id="setColorDepth">setColorDepth</h3> <p>Specify ColorDepth</p><p><code>void setColorDepth(int32_t bits)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>bits</td> <td>int</td> <td>ColorDepth</td></tr></tbody></table></div> <h3 id="setcursor" data-id="setCursor">setCursor</h3> <p>Specify the cursor position.</p><p><code>void setCursor(int32_t x, int32_t y)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>point y</td></tr></tbody></table></div> <h3 id="setepdmode" data-id="setEpdMode">setEpdMode</h3> <p>Set EpdMode.</p><p><code>void setEpdMode(epd_mode_t epd_mode)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>epd_mode</td> <td>epd_mode_t(*1)</td> <td>epd mode</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#epdmodet">
+        About EpdMode
+    </a></p><h3 id="setfont" data-id="setFont">setFont</h3> <p>Specify the font for Text.</p><p><strong>Syntax:</strong></p><p><code>void setFont(const IFont *font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>font</td> <td>IFont (*1)</td> <td>font</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#font-list">
+        About Font
+    </a></p><h3 id="setpivot" data-id="setPivot">setPivot</h3> <p>Specifies the coordinates of Pivot.</p><p><strong>notice:</strong></p><p>The reason the argument is real (float) is that pivot is specified to indicate the center of the pixel. Rotation is offset by +0.5 pixels to the lower right. Therefore, an offset of -0.5 with setPivot will result in an offset.</p><p><strong>Syntax:</strong></p><p><code>void setPivot(float x, float y)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>float</td> <td>point x</td></tr> <tr><td>y</td> <td>float</td> <td>point y</td></tr></tbody></table></div> <h3 id="setrawcolor" data-id="setRawColor">setRawColor</h3> <p>Set raw color.</p><p><strong>Syntax:</strong></p><p><code>void setRawColor(uint32_t color)</code></p><h3 id="setresolution" data-id="setResolution">setResolution</h3> <p>For only M5AtomDisplay. Set Resolution.</p><p><strong>Syntax:</strong></p><p><code>bool setResolution(uint16_t logical_width = 0, uint16_t logical_height = 0, float refresh_rate = 0.0f, uint16_t output_width = 0, uint16_t output_height = 0, uint_fast8_t scale_w = 0, uint_fast8_t scale_h = 0)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description(*1)</th></tr></thead> <tbody><tr><td>logical_width</td> <td>uint16_t</td> <td>Logical screen widths handled by the program</td></tr> <tr><td>logical_height</td> <td>uint16_t</td> <td>Logical screen heights handled by the program</td></tr> <tr><td>refresh_rate</td> <td>float</td> <td>Screen Refresh Rate(*2)</td></tr> <tr><td>output_width</td> <td>uint16_t</td> <td>Actual output screen width</td></tr> <tr><td>output_height</td> <td>uint16_t</td> <td>Actual output screen height</td></tr> <tr><td>scale_w</td> <td>uint_fast8_t</td> <td>Magnification of logical_width</td></tr> <tr><td>scale_h</td> <td>uint_fast8_t</td> <td>Magnification of logical_height</td></tr></tbody></table></div> <h3 id="setrotation" data-id="setRotation">setRotation</h3> <p>Rotate Screen</p><p><strong>Syntax:</strong></p><p><code>void setRotation(uint8_t m)</code></p><p><strong>Function parameter:</strong></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Description</th> <th>Type</th></tr></thead> <tbody><tr><td>m</td> <td>uint8_t</td> <td>Rotate angle  ( * 90°)</td></tr></tbody></table></div> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>Pay Attention:</strong><br>1.Rotate angle is a multiple of 90°<br>2.0-3 is clockwise rotation, 4-7 is counterclockwise rotation (default is 1)<br>3. Need to be set before display.</div></div><p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span> </span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">setRotation</span>(<span class="hljs-number">2</span>);  <span class="hljs-comment">//Rotate the screen 180 degrees clockwise (2 x 90)</span>
+  display.<span class="hljs-built_in">fillEllipse</span>(<span class="hljs-number">160</span>, <span class="hljs-number">100</span>, <span class="hljs-number">60</span>, <span class="hljs-number">100</span>, YELLOW);    <span class="hljs-comment">//Create a yellow ellipse at (160, 100) with the long axis and the short axis to 60 and 100 respectively.</span>
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">1000</span>);
+  display.<span class="hljs-built_in">setRotation</span>(<span class="hljs-number">1</span>);  <span class="hljs-comment">//Restore the screen to the default display state</span>
+  display.<span class="hljs-built_in">fillEllipse</span>(<span class="hljs-number">160</span>, <span class="hljs-number">100</span>, <span class="hljs-number">60</span>, <span class="hljs-number">100</span>, GREEN);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span> </span>{}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+M5GFX display;
+
+void setup() {
+  display.begin();
+  display.setRotation(2);  //Rotate the screen 180 degrees clockwise (2 x 90)
+  display.fillEllipse(160, 100, 60, 100, YELLOW);    //Create a yellow ellipse at (160, 100) with the long axis and the short axis to 60 and 100 respectively.
+  delay(1000);
+  display.setRotation(1);  //Restore the screen to the default display state
+  display.fillEllipse(160, 100, 60, 100, GREEN);
+}
+
+void loop() {}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="setscrollrect" data-id="setScrollRect">setScrollRect</h3> <p>Specifies the range within which the text will scroll.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**notice:**setTextScroll(true) must be executed beforehand.</div></div><p><strong>Syntax:</strong></p><p><code>void setScrollRect(int32_t x, int32_t y, int32_t w, int32_t h)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>x</td> <td>int32_t</td> <td>point x</td></tr> <tr><td>y</td> <td>int32_t</td> <td>point y</td></tr> <tr><td>w</td> <td>int32_t</td> <td>width</td></tr> <tr><td>h</td> <td>int32_t</td> <td>height</td></tr></tbody></table></div> <p><strong>Example:</strong></p><pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+
+M5GFX display;
+<span class="hljs-keyword">uint16_t</span> x;
+<span class="hljs-keyword">uint16_t</span> y;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+  x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+  display.<span class="hljs-built_in">setTextScroll</span>(<span class="hljs-literal">true</span>);
+  display.<span class="hljs-built_in">setScrollRect</span>(x, y, x / <span class="hljs-number">2</span>, y / <span class="hljs-number">2</span>);
+}
+
+<span class="hljs-keyword">uint32_t</span> count = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">printf</span>(<span class="hljs-string">"ScrollTest:%d\n"</span>, count);
+  count++;
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">100</span>);
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+
+M5GFX display;
+uint16_t x;
+uint16_t y;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+  x = display.width() / 2;
+  y = display.height() / 2;
+  display.setTextScroll(true);
+  display.setScrollRect(x, y, x / 2, y / 2);
+}
+
+uint32_t count = 0;
+
+void loop()
+{
+  display.printf(&quot;ScrollTest:%d\n&quot;, count);
+  count++;
+  delay(100);
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="setswapbytes" data-id="setSwapBytes">setSwapBytes</h3> <p>Set swap bytes.</p><p><strong>Syntax:</strong></p><p><code>void setSwapBytes(bool swap)</code></p><h3 id="settextcolor" data-id="setTextColor">setTextColor</h3> <p>Set TextColor.</p><p><strong>Syntax:</strong></p><p><code>void setTextColor(const T &amp;color)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>T (*1)</td> <td>Base color</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-colorcode">
+        About ColorCode
+    </a></p><h3 id="settextdatum" data-id="setTextDatum">setTextDatum</h3> <p>Set TextDatum.</p><p><strong>Syntax:</strong></p><p><code>void setTextDatum(textdatum_t datum)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>datum</td> <td>textdatum_t (*1)</td> <td>Text Datum</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#about-textdatum">
+        About TextDatum
+    </a></p><h3 id="settextscroll" data-id="setTextScroll">setTextScroll</h3> <p>Enable/Disable text scrolling.</p><p><strong>Syntax:</strong></p><p><code>void setTextScroll(bool scroll)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>scroll</td> <td>bool</td> <td>scroll mode</td></tr></tbody></table></div> <h3 id="settextsize" data-id="setTextSize">setTextSize</h3> <p>Set text size.</p><p><strong>Syntax:</strong></p><p><code>void setTextSize(float size)</code>
+    | Parameter  | Type           | Description                      |
+    | ---------- | -------------- | -------------------------------- |
+    | size       | float          | text size                        |</p><p><code>void setTextSize(float sx, float sy)</code>
+    | Parameter  | Type           | Description                      |
+    | ---------- | -------------- | -------------------------------- |
+    | sx         | float          | text size X                      |
+    | sy         | float          | text size Y                      |</p><h3 id="settextstyle" data-id="setTextStyle">setTextStyle</h3> <p>Set text style.</p><p><strong>Syntax:</strong></p><p><code>void setTextStyle(TextStyle textstyle)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>textstyle</td> <td>TextStyle (*1)</td> <td>Text Style</td></tr></tbody></table></div> <p>*1.
+    <a href="./m5gfx_appendix#struct-textstyle">
+        about TextStyle
+    </a></p><h3 id="settextwrap" data-id="setTextWrap">setTextWrap</h3> <p>X-axis is whether or not the turnaround is performed. Y-axis is whether to return to the top after reaching the bottom line.</p><p><strong>Syntax:</strong></p><p><code>void setTextWrap(bool wrapX, bool wrapY = false)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>wrapX</td> <td>bool</td> <td>wrap X</td></tr> <tr><td>wrapY</td> <td>bool</td> <td>wrap Y</td></tr></tbody></table></div> <pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+
+M5GFX display;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+  display.<span class="hljs-built_in">setTextWrap</span>(<span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>); <span class="hljs-comment">// &lt;- Change Value</span>
+
+}
+
+<span class="hljs-keyword">uint32_t</span> count = <span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">printf</span>(<span class="hljs-string">"wrap--------------------------------------------:%d\n"</span>, count);
+  count++;
+  <span class="hljs-built_in">delay</span>(<span class="hljs-number">100</span>);
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+
+M5GFX display;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+  display.setTextWrap(true, true); // <- Change Value
+
+}
+
+uint32_t count = 0;
+
+void loop()
+{
+  display.printf(&quot;wrap--------------------------------------------:%d\n&quot;, count);
+  count++;
+  delay(100);
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="settouchcalibrate" data-id="setTouchCalibrate">setTouchCalibrate</h3> <p>The Touch panel can be calibrated by setting the value obtained/saved by
+    <a href="#calibratetouch">
+        calibrateTouch()
+    </a>.</p><p><strong>Syntax:</strong></p><p><code>void setTouchCalibrate(uint16_t *parameters)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>parameters</td> <td>uint16_t*</td> <td>uint16_t[8]</td></tr></tbody></table></div> <h3 id="setwindow" data-id="setWindow">setWindow</h3> <p>Specifies the rectangle range to which
+    <a href="#writepixels">
+        writePixels()
+    </a>,
+    <a href="#pushpixels">
+        pushPixels()
+    </a>, etc. are to be drawn.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>notice:</strong><br>Same as
+    <a href="#setaddrwindow">
+        setAddrWindow
+    </a>, but the arguments are different. setAddrWindows checks for off-screen overflow, while setWindow does not.</div></div><p><strong>Syntax:</strong></p><p><code>void setWindow(uint_fast16_t xs, uint_fast16_t ys, uint_fast16_t xe, uint_fast16_t ye)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>xs</td> <td>uint_fast16_t</td> <td>start point x</td></tr> <tr><td>ys</td> <td>uint_fast16_t</td> <td>start point y</td></tr> <tr><td>xe</td> <td>uint_fast16_t</td> <td>end point x</td></tr> <tr><td>ye</td> <td>uint_fast16_t</td> <td>end point y</td></tr></tbody></table></div> <h3 id="showfont" data-id="showFont">showFont</h3> <p>Display the specified time font.</p><p><strong>Syntax:</strong></p><p><code>void showFont(uint32_t msec)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>msec</td> <td>uint32_t</td> <td>display time(msec)</td></tr></tbody></table></div> <h3 id="sleep" data-id="sleep">sleep</h3> <p>Sleeps the panel.
+    Wakeup is
+    <a href="#wakeup">
+        wakeup()
+    </a></p><p><strong>Syntax:</strong></p><p><code>void sleep()</code></p><h3 id="startwrite" data-id="startWrite">startWrite</h3> <p>Asserted CS on SPI bus.It is paired with
+    <a href="#endwrite">
+        endWrite()
+    </a>. Declaring startWrite() allows the M5GFX to use the DMA buffer efficiently.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content"><strong>notice:</strong><br>Cannot be used simultaneously with SD card access. Exclusive control is required when there are multiple drawing tasks.</div></div><p><strong>Syntax:</strong></p><p><code>void startWrite()</code></p><h3 id="swap565" data-id="swap565">swap565</h3> <p>Function to get the swapped color code when changing it directly by getBuffer() since the sprite has swapped color data.</p><p><strong>Syntax:</strong></p><p><code>uint16_t swap565(uint8_t r, uint8_t g, uint8_t b)</code></p><h3 id="swap888" data-id="swap888">swap888</h3> <p>Function to get the swapped color code when changing it directly by getBuffer() since the sprite has swapped color data.</p><p><strong>Syntax:</strong></p><p><code>uint32_t swap888(uint8_t r, uint8_t g, uint8_t b)</code></p><h2 id="t - z" data-id="t - z">t - z</h2> <h3 id="textlength" data-id="textLength">textLength</h3> <p>Obtains the number of characters that can be displayed in the specified width.</p><p><strong>Syntax:</strong></p><p><code>int32_t textLength(const char *string, int32_t width)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const char*</td> <td>String</td></tr> <tr><td>width</td> <td>int32_t</td> <td>width</td></tr></tbody></table></div> <h3 id="textwidth" data-id="textWidth">textWidth</h3> <p>Returns the width of the string displayed on the screen. If font is omitted, it is calculated using the default font or the font set with setFont().</p><p><strong>Syntax:</strong></p><p><code>uint32_t textWidth(const char *string)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const char*</td> <td>String</td></tr></tbody></table></div> <p><code>uint32_t textWidth(const char *string, IFont *font)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>string</td> <td>const char*</td> <td>String</td></tr> <tr><td>font</td> <td>IFont (*1)</td> <td>font</td></tr></tbody></table></div> <p>#1.
+    <a href="./m5gfx_appendix#font-list">
+        About font
+    </a></p><h3 id="touch" data-id="touch">touch</h3> <p>If a touch device is present, return the ITouch pointer.</p><p><strong>Syntax:</strong></p><p><code>ITouch* touch()</code></p><h3 id="unloadfont" data-id="unloadFont">unloadFont</h3> <p>Restore font set by
+    <a href="#setfont">
+        setFont()
+    </a> to the default font(&amp;fonts::Font0).</p><p><strong>Syntax:</strong></p><p><code>void unloadFont()</code></p><h3 id="waitdisplay" data-id="waitDisplay">waitDisplay</h3> <p>Wait until display is released.</p><p><strong>Syntax:</strong></p><p><code>void waitDisplay()</code></p><h3 id="waitdma" data-id="waitDMA">waitDMA</h3> <p>Wait until DMA is released.</p><p><strong>Syntax:</strong></p><p><code>void waitDMA()</code></p><h3 id="wakeup" data-id="wakeup">wakeup</h3> <p>Wake up the slept panel device.
+    <a href="#sleep">
+        sleep()
+    </a></p><p><strong>Syntax:</strong></p><p><code>void wakeup()</code></p><h3 id="width" data-id="width">width</h3> <p>Returns the width of the panel.</p><p><strong>Syntax:</strong></p><p><code>int32_t width()</code></p><h3 id="writecolor" data-id="writeColor">writeColor</h3> <p>Draw lines in the rectangular area allocated by
+    <a href="#setwindow">
+        setWindow()
+    </a> or
+    <a href="#setaddrwindow">
+        setAddrWindow()
+    </a>, specifying the color and length of each line.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><code>void writeColor(const T &amp;color, uint32_t length)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>color</td> <td>const T&amp;</td> <td>Color</td></tr> <tr><td>length</td> <td>uint32_t</td> <td>line length</td></tr></tbody></table></div> <pre class="code-copy-added"><code class="language-cpp"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;Arduino.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;M5GFX.h&gt;</span></span>
+
+M5GFX display;
+<span class="hljs-keyword">int32_t</span> x;
+<span class="hljs-keyword">int32_t</span> y;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">setup</span><span class="hljs-params">()</span>
+</span>{
+  display.<span class="hljs-built_in">begin</span>();
+  display.<span class="hljs-built_in">fillScreen</span>(TFT_BLACK);
+
+  x = display.<span class="hljs-built_in">width</span>() / <span class="hljs-number">2</span>;
+  y = display.<span class="hljs-built_in">height</span>() / <span class="hljs-number">2</span>;
+
+  display.<span class="hljs-built_in">startWrite</span>();
+  display.<span class="hljs-built_in">setWindow</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, x - <span class="hljs-number">1</span> , y);
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>; i&lt;y; i++) {
+    display.<span class="hljs-built_in">writeColor</span>(TFT_RED, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">writeColor</span>(TFT_BLUE, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">writeColor</span>(TFT_GREEN, x / <span class="hljs-number">4</span>);
+    display.<span class="hljs-built_in">writeColor</span>(TFT_YELLOW, x / <span class="hljs-number">4</span>);
+  }
+  display.<span class="hljs-built_in">endWrite</span>();
+}
+
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">loop</span><span class="hljs-params">()</span>
+</span>{
+}
+</code><div data-clipboard-action="copy" data-clipboard-text="#include <Arduino.h>
+#include <M5GFX.h>
+
+M5GFX display;
+int32_t x;
+int32_t y;
+
+void setup()
+{
+  display.begin();
+  display.fillScreen(TFT_BLACK);
+
+  x = display.width() / 2;
+  y = display.height() / 2;
+
+  display.startWrite();
+  display.setWindow(0, 0, x - 1 , y);
+  for (int i=0; i<y; i++) {
+    display.writeColor(TFT_RED, x / 4);
+    display.writeColor(TFT_BLUE, x / 4);
+    display.writeColor(TFT_GREEN, x / 4);
+    display.writeColor(TFT_YELLOW, x / 4);
+  }
+  display.endWrite();
+}
+
+
+void loop()
+{
+}
+" class="copy-btn"><svg t="1609826359524" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2955" class="icon"><title>Copy</title> <path d="M770.63802083 933.875H216.92708332c-44.82421875 0-79.1015625-34.27734375-79.10156249-79.1015625V195.59374999h553.7109375c44.82421875 0 79.1015625 34.27734375 79.1015625 79.10156251v659.1796875zM190.55989583 248.328125v606.4453125c0 15.8203125 10.546875 26.3671875 26.36718751 26.3671875h500.97656249V274.6953125c0-15.8203125-10.546875-26.3671875-26.3671875-26.3671875H190.55989583z" p-id="2956"></path> <path d="M612.43489583 424.98828125H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z m0 131.8359375H296.02864583c-13.18359375 0-26.3671875-10.546875-26.3671875-26.3671875 0-13.18359375 10.546875-26.3671875 26.3671875-26.3671875h316.40625c13.18359375 0 26.3671875 10.546875 26.36718751 26.3671875 0 13.18359375-13.18359375 26.3671875-26.36718751 26.3671875z" p-id="2957"></path> <path d="M828.64583333 90.125h-527.34375001c-15.8203125 0-26.3671875 10.546875-26.36718749 26.3671875s10.546875 26.3671875 26.36718751 26.3671875h527.34374999c15.8203125 0 26.3671875 10.546875 26.3671875 26.3671875v606.4453125H823.37239583v52.73437499h84.375V169.2265625c0-44.82421875-36.9140625-79.1015625-79.1015625-79.1015625z" p-id="2958"></path> <path d="M797.00520833 802.0390625a26.3671875 26.3671875 0 1 0 52.73437501 0 26.3671875 26.3671875 0 1 0-52.73437501 0z" p-id="2959"></path></svg> <!----></div></pre> <h3 id="writecommand16" data-id="writeCommand16">writeCommand16</h3> <p>Writes commands(16bit) to the panel.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeCommand(uint16_t cmd)</code></p><h3 id="writedata16" data-id="writeData16">writeData16</h3> <p>Writes data(16bit) to the panel.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeCommand(uint16_t data)</code></p><h3 id="writedata32" data-id="writeData32">writeData32</h3> <p>Writes data(32bit) to the panel.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeCommand(uint32_t data)</code></p><h3 id="writedata" data-id="writeData">writeData</h3> <p>Writes data(8bit) to the panel.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeCommand(uint8_t data)</code></p><h3 id="writefasthline" data-id="writeFastHLine">writeFastHLine</h3> <p>Draw a horizontal line within the clipped area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeFastHLine(int32_t x, int32_t y, int32_t w)</code></p><h3 id="writefastvline" data-id="writeFastVLine">writeFastVLine</h3> <p>Draw a vertical line within the clipped area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeFastVLine(int32_t x, int32_t y, int32_t h)</code></p><h3 id="writefillrect" data-id="writeFillRect">writeFillRect</h3> <p>Draw a rectangle within the clipped area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writefillRect(int32_t x, int32_t y, int32_t w, int32_t h)</code></p><h3 id="writeindexedpixels" data-id="writeIndexedPixels">writeIndexedPixels</h3> <p>Draw image data using a color palette.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writeIndexedPixels(const uint8_t* data, T* palette, int32_t len, uint8_t depth = 8)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>const uint8_t*</td> <td>Image data</td></tr> <tr><td>palette</td> <td>T*</td> <td>palette data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>data length</td></tr> <tr><td>depth</td> <td>uint8_t</td> <td>color depth</td></tr></tbody></table></div> <h3 id="writepixel" data-id="writePixel">writePixel</h3> <p>Draw a pixel within the clipped area.</p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writePixels(T* data, int32_t len)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr></tbody></table></div> <p><code>void writePixels(T* data, int32_t len, bool swap)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr> <tr><td>swap</td> <td>bool</td> <td>Swap bytes</td></tr></tbody></table></div> <h3 id="writepixels" data-id="writePixels">writePixels</h3> <p>Draw pixels within the clipped area. In the cropped rectangular area, data is drawn one line at a time, starting from the upper left corner. </p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writePixels(T* data, int32_t len)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr></tbody></table></div> <p><code>void writePixels(T* data, int32_t len, bool swap)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr> <tr><td>swap</td> <td>bool</td> <td>Swap bytes</td></tr></tbody></table></div> <h3 id="writepixelsdma" data-id="writePixelsDMA">writePixelsDMA</h3> <p>Draw pixels within the clipped area. In the cropped rectangular area, data is drawn one line at a time, starting from the upper left corner. </p> <div class="tip"><div class="tip-title"></div> <div class="tip-content">**note:**This function is used in combination with
+    <a href="#startwrite">
+        startWrite()
+    </a> and
+    <a href="">
+        endWrite()
+    </a>.<br>See the appendix
+    <a href="./m5gfx_appendix#difference-between-drawpush-and-write-functions">
+        difference between draw/push and write functions
+    </a></div></div><p><strong>Syntax:</strong></p><p><code>void writePixels(T* data, int32_t len)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr></tbody></table></div> <p><code>void writePixels(T* data, int32_t len, bool swap)</code></p> <div class="table-container"><table><thead><tr><th>Parameter</th> <th>Type</th> <th>Description</th></tr></thead> <tbody><tr><td>data</td> <td>T*</td> <td>Image data</td></tr> <tr><td>len</td> <td>int32_t</td> <td>Data length</td></tr> <tr><td>swap</td> <td>bool</td> <td>Swap bytes</td></tr></tbody></table></div></div></div>

@@ -32,15 +32,15 @@ StatusView::~StatusView() {
           _co2Canvas, _tempCanvas, _humiCanvas);
     log_i("  SEN55 - PM1.0: %p, PM2.5: %p, PM4.0: %p, PM10: %p",
           _pm1p0Canvas, _pm2p5Canvas, _pm4p0Canvas, _pm10p0Canvas);
-    // Removed statustitle, statusmsg, and nickname UI controls
-    // log_i("  Status - Title: %p, Msg: %p",
-    //       _statusTitleCanvas, _statusMsgCanvas);
     log_i("  Power - Voltage: %p",
           _voltageCanvas);
 }
 
 void StatusView::begin() {
     log_i("begin() called");
+
+    // Display splash screen first
+    displaySplashScreen();
 
     // Create sprite with full LCD dimensions
     log_i("Creating main canvas sprite with dimensions: %dx%d", _lcd->width(), _lcd->height());
@@ -52,27 +52,6 @@ void StatusView::begin() {
     // No vertical divider line in the new design
     log_i("No vertical divider line in the new design");
 
-    // Removed countdown display
-    // Initialize chart canvases
-    // log_i("Initializing chart canvases");
-    // _chartCanvas = new M5Canvas(_canvas);
-    // _chartCanvas->createSprite(60, 12);  // Width for time display, height for font
-    // _chartCanvas->setBaseColor(TFT_WHITE);
-    // _chartCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-    // _chartCanvas->setTextDatum(TL_DATUM);
-    // _chartCanvas->setTextSize(1);
-
-    // _chartCanvas1 = new M5Canvas(_lcd);
-    // _chartCanvas1->createSprite(60, 12);  // Width for time display, height for font
-    // _chartCanvas1->setBaseColor(TFT_WHITE);
-    // _chartCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
-    // _chartCanvas1->setTextDatum(TL_DATUM);
-    // _chartCanvas1->setTextSize(1);
-
-    // Set chart canvas positions
-    // _chartCanvasX = 2;
-    // _chartCanvasY = _lcd->height() - 14;  // Position at bottom of screen (was above logo)
-
     // Initialize sections in their respective columns
     log_i("Initializing UI sections");
     initSCD40();    // Left column, top
@@ -83,102 +62,9 @@ void StatusView::begin() {
     log_i("BME688 initialization complete");
     initPower();    // Right column, bottom
     log_i("Power initialization complete");
-    // Status section removed in the new design
-    // initStatus();   // Status at the bottom
-    // log_i("Status initialization complete");
-    // Removed statustitle, statusmsg, and nickname UI controls
-    // initLOGO();     // Logo at the bottom
-    // log_i("Logo initialization complete");
     log_i("UI initialization complete");
 }
 
-// Removed statustitle, statusmsg, and nickname UI controls
-/*
-void StatusView::initStatus()
-{
-    log_i("Initializing status section");
-    int32_t tempX = 0;
-    int32_t tempY = 0;
-    int32_t tempW = 0;
-    int32_t tempH = 0;
-
-    // Use full width for status section
-    tempW = _lcd->width() - 4;
-    log_i("Status section width: %ld", tempW);
-
-    tempH = _border
-            + _padding
-            + _canvas->fontHeight(_statusTitleFont)
-            + _padding
-            + _canvas->fontHeight(_statusMsgFont)
-            + _padding
-            + _border;
-    log_i("Status section height: %ld", tempH);
-
-    // button div - centered at bottom
-    tempX = 2;  // Start from left edge
-    tempY = _lcd->height() - tempH - 2;  // Position at bottom with border
-    log_i("Drawing status section at (%ld, %ld)", tempX, tempY);
-    _canvas->drawRect(tempX, tempY, tempW, tempH, TFT_BLACK);
-
-    // Header background
-    _canvas->fillRect(tempX + _border, tempY + _border, tempW - (_border * 2), _canvas->fontHeight(_statusTitleFont) + (_padding * 2), TFT_BLACK);
-
-    // Header text
-    tempX = tempX + _border + _padding;
-    tempY = tempY + _border + _padding;
-    _canvas->fillRect(tempX, tempY, 5, _canvas->fontHeight(_statusTitleFont), TFT_WHITE);
-    tempX = tempX + 5 + 2;
-    _canvas->setTextColor(TFT_WHITE, TFT_BLACK);
-    _canvas->drawString("Status", tempX, tempY, _statusTitleFont);
-    _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
-
-    _statusTitleCanvasX = tempX;
-    _statusTitleCanvasY = tempY;
-    log_i("Status title position: (%ld, %ld)", _statusTitleCanvasX, _statusTitleCanvasY);
-
-    // Create sprites with proper dimensions
-    log_i("Creating status title sprites");
-    _statusTitleCanvas = new M5Canvas(_canvas);
-    _statusTitleCanvas->createSprite(
-        _statusTitleCanvas->textWidth("Status", _statusTitleFont),
-        _statusTitleCanvas->fontHeight(_statusTitleFont)
-    );
-    _statusTitleCanvas->setBaseColor(TFT_WHITE);
-    _statusTitleCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-
-    _statusTitleCanvas1 = new M5Canvas(_lcd);
-    _statusTitleCanvas1->createSprite(
-        _statusTitleCanvas1->textWidth("Status", _statusTitleFont),
-        _statusTitleCanvas1->fontHeight(_statusTitleFont)
-    );
-    _statusTitleCanvas1->setBaseColor(TFT_WHITE);
-    _statusTitleCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
-
-    _statusMsgCanvasX = tempX;
-    _statusMsgCanvasY = tempY + _canvas->fontHeight(_statusTitleFont) + _padding;
-    log_i("Status message position: (%ld, %ld)", _statusMsgCanvasX, _statusMsgCanvasY);
-
-    // Create message sprites with proper dimensions
-    log_i("Creating status message sprites");
-    _statusMsgCanvas = new M5Canvas(_canvas);
-    _statusMsgCanvas->createSprite(
-        _statusMsgCanvas->textWidth("n/a", _statusMsgFont),
-        _statusMsgCanvas->fontHeight(_statusMsgFont)
-    );
-    _statusMsgCanvas->setBaseColor(TFT_WHITE);
-    _statusMsgCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
-
-    _statusMsgCanvas1 = new M5Canvas(_lcd);
-    _statusMsgCanvas1->createSprite(
-        _statusMsgCanvas1->textWidth("n/a", _statusMsgFont),
-        _statusMsgCanvas1->fontHeight(_statusMsgFont)
-    );
-    _statusMsgCanvas1->setBaseColor(TFT_WHITE);
-    _statusMsgCanvas1->setTextColor(TFT_BLACK, TFT_WHITE);
-    log_i("Status section initialization complete");
-}
-*/
 
 void StatusView::initSCD40()
 {
@@ -353,38 +239,6 @@ void StatusView::initPower()
     _percentageCanvas->setTextColor(TFT_BLACK, TFT_WHITE);
 }
 
-// Removed statustitle, statusmsg, and nickname UI controls
-/*
-void StatusView::initLOGO()
-{
-    log_i("Initializing logo section");
-    // Position logo at the bottom of the screen
-    _nicknameCanvasX = 2;
-    _nicknameCanvasY = _lcd->height() - 34;  // 32px height + 2px border
-
-    _nicknameCanvas = new M5Canvas(_canvas);
-    _nicknameCanvas->createSprite(_lcd->width() - 4, 32);  // Full width minus borders
-    _nicknameCanvas->setBaseColor(TFT_BLACK);
-    _nicknameCanvas->setTextColor(TFT_WHITE, TFT_BLACK);
-
-    _nicknameCanvas->clear();
-    int32_t cursorX = (_lcd->width() - 4) / 2;  // Center in full width
-    int32_t cursorY = (32 - _canvas->fontHeight(&fonts::efontCN_14)) / 2;
-    _nicknameCanvas->drawCenterString("AirQ", cursorX, cursorY, &fonts::efontCN_14);
-    _updateImpl(_nicknameCanvas, _nicknameCanvasX, _nicknameCanvasY);
-
-    _nicknameCanvas1 = new M5Canvas(_lcd);
-    _nicknameCanvas1->createSprite(_lcd->width() - 4, 32);  // Full width minus borders
-    _nicknameCanvas1->setBaseColor(TFT_BLACK);
-    _nicknameCanvas1->setTextColor(TFT_WHITE, TFT_BLACK);
-    _nicknameCanvas1->clear();
-    cursorX = (_lcd->width() - 4) / 2;  // Center in full width
-    cursorY = (32 - _nicknameCanvas1->fontHeight(&fonts::efontCN_14)) / 2;
-    _nicknameCanvas1->drawCenterString("AirQ", cursorX, cursorY, &fonts::efontCN_14);
-
-    log_i("Logo section initialized successfully");
-}
-*/
 
 void StatusView::initSEN55()
 {
@@ -437,55 +291,58 @@ void StatusView::initSEN55()
     _canvas->drawString("SEN55", tempX, tempY, _sen55TitleFont);
     _canvas->setTextColor(TFT_BLACK, TFT_WHITE);
 
+    // Calculate right edge of the section for right-aligned values
+    int32_t rightEdge = _sen55BaseCursorX + tempW - _border - _padding;
+
     // Draw labels and create canvases for each value
     int32_t labelX = tempX;
     int32_t labelY = tempY + _canvas->fontHeight(_sen55TitleFont) + _padding;
 
     // PM1.0
     _canvas->drawString("PM1.0:", labelX, labelY);
-    _pm1p0CanvasX = labelX + _canvas->textWidth("PM1.0:", _sen55OptionFont) + 2;
+    _pm1p0CanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _pm1p0CanvasY = labelY;
 
     // PM2.5
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("PM2.5:", labelX, labelY);
-    _pm2p5CanvasX = labelX + _canvas->textWidth("PM2.5:", _sen55OptionFont) + 2;
+    _pm2p5CanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _pm2p5CanvasY = labelY;
 
     // PM4.0
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("PM4.0:", labelX, labelY);
-    _pm4p0CanvasX = labelX + _canvas->textWidth("PM4.0:", _sen55OptionFont) + 2;
+    _pm4p0CanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _pm4p0CanvasY = labelY;
 
     // PM10.0
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("PM10:", labelX, labelY);
-    _pm10p0CanvasX = labelX + _canvas->textWidth("PM10:", _sen55OptionFont) + 2;
+    _pm10p0CanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _pm10p0CanvasY = labelY;
 
     // Temperature
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("Temp:", labelX, labelY);
-    _sen55TempCanvasX = labelX + _canvas->textWidth("Temp:", _sen55OptionFont) + 2;
+    _sen55TempCanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _sen55TempCanvasY = labelY;
 
     // Humidity
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("RH:", labelX, labelY);
-    _sen55HumiCanvasX = labelX + _canvas->textWidth("RH:", _sen55OptionFont) + 2;
+    _sen55HumiCanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _sen55HumiCanvasY = labelY;
 
     // VOC
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("VOC:", labelX, labelY);
-    _vocCanvasX = labelX + _canvas->textWidth("VOC:", _sen55OptionFont) + 2;
+    _vocCanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _vocCanvasY = labelY;
 
     // NOx
     labelY += _canvas->fontHeight(_sen55OptionFont) + _padding;
     _canvas->drawString("NOx:", labelX, labelY);
-    _noxCanvasX = labelX + _canvas->textWidth("NOx:", _sen55OptionFont) + 2;
+    _noxCanvasX = rightEdge - _canvas->textWidth("000.00", _sen55OptionFont);
     _noxCanvasY = labelY;
 
     // Create and initialize all canvases
@@ -499,15 +356,39 @@ void StatusView::initSEN55()
     _vocCanvas = new M5Canvas(_canvas);
     _noxCanvas = new M5Canvas(_canvas);
 
-    // Initialize each canvas with proper dimensions
-    _pm1p0Canvas->createSprite(40, 12);
-    _pm2p5Canvas->createSprite(40, 12);
-    _pm4p0Canvas->createSprite(40, 12);
-    _pm10p0Canvas->createSprite(40, 12);
-    _sen55TempCanvas->createSprite(40, 12);
-    _sen55HumiCanvas->createSprite(40, 12);
-    _vocCanvas->createSprite(40, 12);
-    _noxCanvas->createSprite(40, 12);
+    // Initialize each canvas with dynamic dimensions based on maximum expected text width
+    _pm1p0Canvas->createSprite(
+        _pm1p0Canvas->textWidth("000.00", _sen55OptionFont),
+        _pm1p0Canvas->fontHeight(_sen55OptionFont)
+    );
+    _pm2p5Canvas->createSprite(
+        _pm2p5Canvas->textWidth("000.00", _sen55OptionFont),
+        _pm2p5Canvas->fontHeight(_sen55OptionFont)
+    );
+    _pm4p0Canvas->createSprite(
+        _pm4p0Canvas->textWidth("000.00", _sen55OptionFont),
+        _pm4p0Canvas->fontHeight(_sen55OptionFont)
+    );
+    _pm10p0Canvas->createSprite(
+        _pm10p0Canvas->textWidth("000.00", _sen55OptionFont),
+        _pm10p0Canvas->fontHeight(_sen55OptionFont)
+    );
+    _sen55TempCanvas->createSprite(
+        _sen55TempCanvas->textWidth("000.00", _sen55OptionFont),
+        _sen55TempCanvas->fontHeight(_sen55OptionFont)
+    );
+    _sen55HumiCanvas->createSprite(
+        _sen55HumiCanvas->textWidth("000.00", _sen55OptionFont),
+        _sen55HumiCanvas->fontHeight(_sen55OptionFont)
+    );
+    _vocCanvas->createSprite(
+        _vocCanvas->textWidth("000.00", _sen55OptionFont),
+        _vocCanvas->fontHeight(_sen55OptionFont)
+    );
+    _noxCanvas->createSprite(
+        _noxCanvas->textWidth("000.00", _sen55OptionFont),
+        _noxCanvas->fontHeight(_sen55OptionFont)
+    );
 
     // Set common properties for all canvases
     _pm1p0Canvas->setBaseColor(TFT_WHITE);
@@ -551,37 +432,37 @@ void StatusView::initSEN55()
     _noxCanvas->setTextSize(1);
 
     // Draw initial values
-    _pm1p0Canvas->fillSprite(TFT_WHITE);
-    _pm1p0Canvas->drawString("0.0", 0, 0);
-    _pm1p0Canvas->pushSprite(_pm1p0CanvasX, _pm1p0CanvasY);
+    _pm1p0Canvas->clear();
+    _pm1p0Canvas->drawRightString("0.0", _pm1p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm1p0Canvas, _pm1p0CanvasX, _pm1p0CanvasY);
 
-    _pm2p5Canvas->fillSprite(TFT_WHITE);
-    _pm2p5Canvas->drawString("0.0", 0, 0);
-    _pm2p5Canvas->pushSprite(_pm2p5CanvasX, _pm2p5CanvasY);
+    _pm2p5Canvas->clear();
+    _pm2p5Canvas->drawRightString("0.0", _pm2p5Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm2p5Canvas, _pm2p5CanvasX, _pm2p5CanvasY);
 
-    _pm4p0Canvas->fillSprite(TFT_WHITE);
-    _pm4p0Canvas->drawString("0.0", 0, 0);
-    _pm4p0Canvas->pushSprite(_pm4p0CanvasX, _pm4p0CanvasY);
+    _pm4p0Canvas->clear();
+    _pm4p0Canvas->drawRightString("0.0", _pm4p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm4p0Canvas, _pm4p0CanvasX, _pm4p0CanvasY);
 
-    _pm10p0Canvas->fillSprite(TFT_WHITE);
-    _pm10p0Canvas->drawString("0.0", 0, 0);
-    _pm10p0Canvas->pushSprite(_pm10p0CanvasX, _pm10p0CanvasY);
+    _pm10p0Canvas->clear();
+    _pm10p0Canvas->drawRightString("0.0", _pm10p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm10p0Canvas, _pm10p0CanvasX, _pm10p0CanvasY);
 
-    _sen55TempCanvas->fillSprite(TFT_WHITE);
-    _sen55TempCanvas->drawString("0.0", 0, 0);
-    _sen55TempCanvas->pushSprite(_sen55TempCanvasX, _sen55TempCanvasY);
+    _sen55TempCanvas->clear();
+    _sen55TempCanvas->drawRightString("0.0", _sen55TempCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_sen55TempCanvas, _sen55TempCanvasX, _sen55TempCanvasY);
 
-    _sen55HumiCanvas->fillSprite(TFT_WHITE);
-    _sen55HumiCanvas->drawString("0.0", 0, 0);
-    _sen55HumiCanvas->pushSprite(_sen55HumiCanvasX, _sen55HumiCanvasY);
+    _sen55HumiCanvas->clear();
+    _sen55HumiCanvas->drawRightString("0.0", _sen55HumiCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_sen55HumiCanvas, _sen55HumiCanvasX, _sen55HumiCanvasY);
 
-    _vocCanvas->fillSprite(TFT_WHITE);
-    _vocCanvas->drawString("0.0", 0, 0);
-    _vocCanvas->pushSprite(_vocCanvasX, _vocCanvasY);
+    _vocCanvas->clear();
+    _vocCanvas->drawRightString("0.0", _vocCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_vocCanvas, _vocCanvasX, _vocCanvasY);
 
-    _noxCanvas->fillSprite(TFT_WHITE);
-    _noxCanvas->drawString("0.0", 0, 0);
-    _noxCanvas->pushSprite(_noxCanvasX, _noxCanvasY);
+    _noxCanvas->clear();
+    _noxCanvas->drawRightString("0.0", _noxCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_noxCanvas, _noxCanvasX, _noxCanvasY);
 
     log_i("SEN55 section initialized successfully");
 }
@@ -624,14 +505,32 @@ void StatusView::initBME688()
           _bme688TempCanvas, _bme688HumiCanvas, _bme688PressCanvas, _bme688GasCanvas, 
           _bme688IaqCanvas, _bme688Co2EqCanvas);
 
-    // Initialize each canvas with smaller dimensions for just the values
+    // Initialize each canvas with dynamic dimensions based on maximum expected text width
     log_i("Creating BME688 sprites");
-    _bme688TempCanvas->createSprite(40, 12);  // Smaller size for just the value
-    _bme688HumiCanvas->createSprite(40, 12);
-    _bme688PressCanvas->createSprite(40, 12);
-    _bme688GasCanvas->createSprite(40, 12);
-    _bme688IaqCanvas->createSprite(40, 12);
-    _bme688Co2EqCanvas->createSprite(40, 12);
+    _bme688TempCanvas->createSprite(
+        _bme688TempCanvas->textWidth("000.0", _bme688OptionFont),
+        _bme688TempCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688HumiCanvas->createSprite(
+        _bme688HumiCanvas->textWidth("000.0", _bme688OptionFont),
+        _bme688HumiCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688PressCanvas->createSprite(
+        _bme688PressCanvas->textWidth("0000.0", _bme688OptionFont),  // Larger for pressure values
+        _bme688PressCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688GasCanvas->createSprite(
+        _bme688GasCanvas->textWidth("100000.0", _bme688OptionFont),  // Much larger for gas resistance values
+        _bme688GasCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688IaqCanvas->createSprite(
+        _bme688IaqCanvas->textWidth("000.0", _bme688OptionFont),
+        _bme688IaqCanvas->fontHeight(_bme688OptionFont)
+    );
+    _bme688Co2EqCanvas->createSprite(
+        _bme688Co2EqCanvas->textWidth("10000.0", _bme688OptionFont),  // Larger for CO2 equivalent values
+        _bme688Co2EqCanvas->fontHeight(_bme688OptionFont)
+    );
 
     log_i("BME688 sprites created successfully");
 
@@ -669,55 +568,84 @@ void StatusView::initBME688()
 
     log_i("BME688 canvas properties set successfully");
 
+    // Calculate right edge of the section for right-aligned values
+    int32_t rightEdge = _bme688BaseCursorX + tempW - _border - _padding;
+
     // Draw labels on the main canvas
     int32_t labelX = tempX + _border + _padding;
     int32_t labelY = headerY + _canvas->fontHeight(_bme688TitleFont) + _padding;
 
-    _canvas->drawString("Temp:", labelX, labelY);
-    _canvas->drawString("Humi:", labelX, labelY + 15);
-    _canvas->drawString("Press:", labelX, labelY + 30);
-    _canvas->drawString("Gas:", labelX, labelY + 45);
-    _canvas->drawString("IAQ:", labelX, labelY + 60);
-    _canvas->drawString("CO2eq:", labelX, labelY + 75);
+    // Calculate dynamic Y increments based on font height and padding
+    int32_t yIncrement = _canvas->fontHeight(_bme688OptionFont) + _padding;
 
-    // Store positions for value updates
-    _bme688TempCanvasX = labelX + 45;  // Position after labels
+    _canvas->drawString("Temp:", labelX, labelY);
+
+    labelY += yIncrement;
+    _canvas->drawString("Humi:", labelX, labelY);
+
+    labelY += yIncrement;
+    _canvas->drawString("Press:", labelX, labelY);
+
+    labelY += yIncrement;
+    _canvas->drawString("Gas:", labelX, labelY);
+
+    labelY += yIncrement;
+    _canvas->drawString("IAQ:", labelX, labelY);
+
+    labelY += yIncrement;
+    _canvas->drawString("CO2eq:", labelX, labelY);
+
+    // Reset labelY to the initial value for canvas positioning
+    labelY = headerY + _canvas->fontHeight(_bme688TitleFont) + _padding;
+
+    // Store positions for value updates - right-aligned
+    _bme688TempCanvasX = rightEdge - _canvas->textWidth("000.0", _bme688OptionFont);
     _bme688TempCanvasY = labelY;
-    _bme688HumiCanvasX = labelX + 45;
-    _bme688HumiCanvasY = labelY + 15;
-    _bme688PressCanvasX = labelX + 45;
-    _bme688PressCanvasY = labelY + 30;
-    _bme688GasCanvasX = labelX + 45;
-    _bme688GasCanvasY = labelY + 45;
-    _bme688IaqCanvasX = labelX + 45;
-    _bme688IaqCanvasY = labelY + 60;
-    _bme688Co2EqCanvasX = labelX + 45;
-    _bme688Co2EqCanvasY = labelY + 75;
+
+    labelY += yIncrement;
+    _bme688HumiCanvasX = rightEdge - _canvas->textWidth("000.0", _bme688OptionFont);
+    _bme688HumiCanvasY = labelY;
+
+    labelY += yIncrement;
+    _bme688PressCanvasX = rightEdge - _canvas->textWidth("0000.0", _bme688OptionFont);
+    _bme688PressCanvasY = labelY;
+
+    labelY += yIncrement;
+    _bme688GasCanvasX = rightEdge - _canvas->textWidth("100000.0", _bme688OptionFont);
+    _bme688GasCanvasY = labelY;
+
+    labelY += yIncrement;
+    _bme688IaqCanvasX = rightEdge - _canvas->textWidth("000.0", _bme688OptionFont);
+    _bme688IaqCanvasY = labelY;
+
+    labelY += yIncrement;
+    _bme688Co2EqCanvasX = rightEdge - _canvas->textWidth("10000.0", _bme688OptionFont);
+    _bme688Co2EqCanvasY = labelY;
 
     // Draw initial values
-    _bme688TempCanvas->fillSprite(TFT_WHITE);
-    _bme688TempCanvas->drawString("0.0", 0, 0);
-    _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
+    _bme688TempCanvas->clear();
+    _bme688TempCanvas->drawRightString("0.0", _bme688TempCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688TempCanvas, _bme688TempCanvasX, _bme688TempCanvasY);
 
-    _bme688HumiCanvas->fillSprite(TFT_WHITE);
-    _bme688HumiCanvas->drawString("0.0", 0, 0);
-    _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
+    _bme688HumiCanvas->clear();
+    _bme688HumiCanvas->drawRightString("0.0", _bme688HumiCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688HumiCanvas, _bme688HumiCanvasX, _bme688HumiCanvasY);
 
-    _bme688PressCanvas->fillSprite(TFT_WHITE);
-    _bme688PressCanvas->drawString("0.0", 0, 0);
-    _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
+    _bme688PressCanvas->clear();
+    _bme688PressCanvas->drawRightString("0.0", _bme688PressCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688PressCanvas, _bme688PressCanvasX, _bme688PressCanvasY);
 
-    _bme688GasCanvas->fillSprite(TFT_WHITE);
-    _bme688GasCanvas->drawString("0.0", 0, 0);
-    _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+    _bme688GasCanvas->clear();
+    _bme688GasCanvas->drawRightString("0.0", _bme688GasCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688GasCanvas, _bme688GasCanvasX, _bme688GasCanvasY);
 
-    _bme688IaqCanvas->fillSprite(TFT_WHITE);
-    _bme688IaqCanvas->drawString("0.0", 0, 0);
-    _bme688IaqCanvas->pushSprite(_bme688IaqCanvasX, _bme688IaqCanvasY);
+    _bme688IaqCanvas->clear();
+    _bme688IaqCanvas->drawRightString("0.0", _bme688IaqCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688IaqCanvas, _bme688IaqCanvasX, _bme688IaqCanvasY);
 
-    _bme688Co2EqCanvas->fillSprite(TFT_WHITE);
-    _bme688Co2EqCanvas->drawString("0.0", 0, 0);
-    _bme688Co2EqCanvas->pushSprite(_bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
+    _bme688Co2EqCanvas->clear();
+    _bme688Co2EqCanvas->drawRightString("0.0", _bme688Co2EqCanvas->width(), 0, _bme688OptionFont);
+    _updateImpl(_bme688Co2EqCanvas, _bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
 
     log_i("BME688 section initialized successfully");
 }
@@ -741,8 +669,8 @@ void StatusView::updatePower(uint32_t voltage)
     char str[13] = { 0 };
 
     // Clear canvases
-    _voltageCanvas->clear(TFT_WHITE);
-    _percentageCanvas->clear(TFT_WHITE);
+    _voltageCanvas->clear();
+    _percentageCanvas->clear();
 
     // Calculate voltage
     float v = (((float)voltage / 1000) * 2);
@@ -757,12 +685,14 @@ void StatusView::updatePower(uint32_t voltage)
     // Format and display voltage
     sprintf(str, "%.2fV", v);
     log_i("Drawing voltage value: %s", str);
+    _voltageCanvas->clear();
     _voltageCanvas->drawRightString(str, _voltageCanvas->width(), 0, _poweroptionFont);
     _updateImpl(_voltageCanvas, _voltageCanvasX, _voltageCanvasY);
 
     // Format and display percentage
     sprintf(str, "%d%%", percentage);
     log_i("Drawing percentage value: %s", str);
+    _percentageCanvas->clear();
     _percentageCanvas->drawRightString(str, _percentageCanvas->width(), 0, _poweroptionFont);
     _updateImpl(_percentageCanvas, _percentageCanvasX, _percentageCanvasY);
 
@@ -770,83 +700,6 @@ void StatusView::updatePower(uint32_t voltage)
     log_i("Power display updated - Voltage: %.2fV, Percentage: %d%%", v, percentage);
 }
 
-// Removed countdown display
-/*
-void StatusView::updateCountdown(uint32_t seconds) {
-    log_i("Updating countdown with seconds: %lu", seconds);
-    if (!_chartCanvas) {
-        log_e("Chart canvas not initialized");
-        return;
-    }
-
-    String msg;
-    int remainingSeconds = 0;
-    uint32_t h = 0;
-    uint32_t m = 0;
-    uint32_t s = 0;
-
-    h = seconds / 3600;
-    remainingSeconds = seconds % 3600;
-    m = remainingSeconds / 60;
-    s = remainingSeconds % 60;
-    msg = "Time:";
-    if (h != 0) {
-        msg += String(h) + "h";
-    }
-    if (h != 0 || m != 0 || (h != 0 && s != 0)) {
-        msg += String(m) + "m";
-    }
-    if (s != 0) {
-        msg += String(s) + "s";
-    }
-
-    log_i("Drawing countdown message: %s", msg.c_str());
-    _chartCanvas->clear(TFT_WHITE);
-    _chartCanvas->drawString(msg.c_str(), 0, 0, _poweroptionFont);
-    _updateImpl(_chartCanvas, _chartCanvasX, _chartCanvasY);
-    log_i("Countdown update completed");
-}
-
-void StatusView::displayCountdown(uint32_t seconds) {
-    log_i("Displaying countdown with seconds: %lu", seconds);
-    if (!_chartCanvas1) {
-        log_e("Chart canvas 1 not initialized");
-        return;
-    }
-
-    String msg;
-    int remainingSeconds = 0;
-    uint32_t h = 0;
-    uint32_t m = 0;
-    uint32_t s = 0;
-
-    h = seconds / 3600;
-    remainingSeconds = seconds % 3600;
-    m = remainingSeconds / 60;
-    s = remainingSeconds % 60;
-
-    if (h != 0) {
-        msg += String(h) + "h";
-    }
-    if (h != 0 || m != 0 || (h != 0 && s != 0)) {
-        msg += String(m) + "m";
-    }
-    if (s != 0) {
-        msg += String(s) + "s";
-    }
-
-    log_i("Drawing countdown display: %s", msg.c_str());
-    _chartCanvas1->clear(TFT_WHITE);
-    _chartCanvas1->drawString(msg.c_str(), 0, 0, _poweroptionFont);
-    _lcd->fillRect(_chartCanvasX + _chartCanvas1->textWidth("Time:", _poweroptionFont), 
-                  _chartCanvasY, _chartCanvas1->width(), _chartCanvas1->height(), TFT_WHITE);
-    _chartCanvas1->pushSprite(_chartCanvasX + _chartCanvas1->textWidth("Time:", _poweroptionFont), _chartCanvasY);
-    _lcd->waitDisplay();
-
-    updateCountdown(seconds);
-    log_i("Countdown display completed");
-}
-*/
 
 void StatusView::updateSEN55(
     float massConcentrationPm1p0,
@@ -875,177 +728,121 @@ void StatusView::updateSEN55(
 
     // Clear all canvases
     log_i("Clearing SEN55 canvases");
-    _pm1p0Canvas->clear(TFT_WHITE);
-    _pm2p5Canvas->clear(TFT_WHITE);
-    _pm4p0Canvas->clear(TFT_WHITE);
-    _pm10p0Canvas->clear(TFT_WHITE);
-    _sen55TempCanvas->clear(TFT_WHITE);
-    _sen55HumiCanvas->clear(TFT_WHITE);
-    _vocCanvas->clear(TFT_WHITE);
-    _noxCanvas->clear(TFT_WHITE);
+    _pm1p0Canvas->clear();
+    _pm2p5Canvas->clear();
+    _pm4p0Canvas->clear();
+    _pm10p0Canvas->clear();
+    _sen55TempCanvas->clear();
+    _sen55HumiCanvas->clear();
+    _vocCanvas->clear();
+    _noxCanvas->clear();
 
     // Update each value
     sprintf(str, "%.2f", massConcentrationPm1p0);
     log_i("Updating PM1.0: %s", str);
-    _pm1p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
-    _pm1p0Canvas->pushSprite(_pm1p0CanvasX, _pm1p0CanvasY);
+    _pm1p0Canvas->drawRightString(str, _pm1p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm1p0Canvas, _pm1p0CanvasX, _pm1p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm2p5);
     log_i("Updating PM2.5: %s", str);
-    _pm2p5Canvas->drawString(str, 0, 0, _sen55OptionFont);
-    _pm2p5Canvas->pushSprite(_pm2p5CanvasX, _pm2p5CanvasY);
+    _pm2p5Canvas->drawRightString(str, _pm2p5Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm2p5Canvas, _pm2p5CanvasX, _pm2p5CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm4p0);
     log_i("Updating PM4.0: %s", str);
-    _pm4p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
-    _pm4p0Canvas->pushSprite(_pm4p0CanvasX, _pm4p0CanvasY);
+    _pm4p0Canvas->drawRightString(str, _pm4p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm4p0Canvas, _pm4p0CanvasX, _pm4p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", massConcentrationPm10p0);
     log_i("Updating PM10: %s", str);
-    _pm10p0Canvas->drawString(str, 0, 0, _sen55OptionFont);
-    _pm10p0Canvas->pushSprite(_pm10p0CanvasX, _pm10p0CanvasY);
+    _pm10p0Canvas->drawRightString(str, _pm10p0Canvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_pm10p0Canvas, _pm10p0CanvasX, _pm10p0CanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", ambientTemperature);
     log_i("Updating Temperature: %s", str);
-    _sen55TempCanvas->drawString(str, 0, 0, _sen55OptionFont);
-    _sen55TempCanvas->pushSprite(_sen55TempCanvasX, _sen55TempCanvasY);
+    _sen55TempCanvas->drawRightString(str, _sen55TempCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_sen55TempCanvas, _sen55TempCanvasX, _sen55TempCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", ambientHumidity);
     log_i("Updating Humidity: %s", str);
-    _sen55HumiCanvas->drawString(str, 0, 0, _sen55OptionFont);
-    _sen55HumiCanvas->pushSprite(_sen55HumiCanvasX, _sen55HumiCanvasY);
+    _sen55HumiCanvas->drawRightString(str, _sen55HumiCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_sen55HumiCanvas, _sen55HumiCanvasX, _sen55HumiCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", vocIndex);
     log_i("Updating VOC: %s", str);
-    _vocCanvas->drawString(str, 0, 0, _sen55OptionFont);
-    _vocCanvas->pushSprite(_vocCanvasX, _vocCanvasY);
+    _vocCanvas->drawRightString(str, _vocCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_vocCanvas, _vocCanvasX, _vocCanvasY);
 
     memset(str, 0, sizeof(str));
     sprintf(str, "%.2f", noxIndex);
     log_i("Updating NOx: %s", str);
-    _noxCanvas->drawString(str, 0, 0, _sen55OptionFont);
-    _noxCanvas->pushSprite(_noxCanvasX, _noxCanvasY);
+    _noxCanvas->drawRightString(str, _noxCanvas->width(), 0, _sen55OptionFont);
+    _updateImpl(_noxCanvas, _noxCanvasX, _noxCanvasY);
+
+    // Wait for display to complete refresh
+    _lcd->waitDisplay();
 
     log_i("SEN55 update completed successfully");
 }
 
-// Removed statustitle, statusmsg, and nickname UI controls
-/*
-void StatusView::displayNetworkStatus(const char *title, const char *msg) {
-    log_i("Displaying network status - Title: %s, Message: %s", title, msg);
-    if (!_statusTitleCanvas1 || !_statusMsgCanvas1) {
-        log_e("Status canvas objects not initialized");
-        return;
+
+
+void StatusView::displaySplashScreen() {
+    log_i("Displaying splash screen");
+
+    // Clear the screen
+    _lcd->clear(TFT_WHITE);
+    _lcd->waitDisplay();
+
+    // Create a temporary canvas for the splash screen
+    M5Canvas splashCanvas(_lcd);
+    splashCanvas.createSprite(_lcd->width(), _lcd->height());
+    splashCanvas.setBaseColor(TFT_WHITE);
+    splashCanvas.setTextColor(TFT_BLACK, TFT_WHITE);
+    splashCanvas.fillSprite(TFT_WHITE);
+
+    // Draw the logo (simplified version of the SVG)
+    int centerX = _lcd->width() / 2;
+    int centerY = _lcd->height() / 2 - 20;
+    int radius = 60;
+
+    // Draw outer circle
+    splashCanvas.drawCircle(centerX, centerY, radius, TFT_BLACK);
+
+    // Draw inner design (simplified representation of the logo)
+    for (int i = 0; i < 5; i++) {
+        float angle = i * 2 * PI / 5;
+        int x1 = centerX + cos(angle) * radius * 0.5;
+        int y1 = centerY + sin(angle) * radius * 0.5;
+        int x2 = centerX + cos(angle + PI/5) * radius * 0.8;
+        int y2 = centerY + sin(angle + PI/5) * radius * 0.8;
+        splashCanvas.drawLine(x1, y1, x2, y2, TFT_BLACK);
     }
 
-    _statusTitleCanvas1->clear(TFT_WHITE);
-    _statusMsgCanvas1->clear(TFT_WHITE);
-    _statusTitleCanvas1->drawCenterString(title, _statusTitleCanvas1->width() / 2, 0, _statusTitleFont);
-    _statusMsgCanvas1->drawCenterString(msg, _statusMsgCanvas1->width() / 2, 0, _statusMsgFont);
+    // Draw "Biozen, LLC" text
+    splashCanvas.setTextSize(1);
+    splashCanvas.setTextDatum(TC_DATUM);
+    splashCanvas.drawString("Biozen, LLC", centerX, centerY + radius + 20, &fonts::FreeSansBold12pt7b);
 
-    _updateImpl(_statusTitleCanvas1, _statusTitleCanvasX, _statusTitleCanvasY);
-    _updateImpl(_statusMsgCanvas1, _statusMsgCanvasX, _statusMsgCanvasY);
-    updateNetworkStatus(title, msg);
-    log_i("Network status display completed");
+    // Push the canvas to the display using partial update
+    _updateImpl(&splashCanvas, 0, 0);
+    _lcd->waitDisplay();
+
+    // Delay to show the splash screen
+    delay(2000);
+
+    log_i("Splash screen displayed");
 }
-
-void StatusView::updateNetworkStatus(const char *title, const char *msg) {
-    log_i("Updating network status - Title: %s, Message: %s", title, msg);
-    if (!_statusTitleCanvas || !_statusMsgCanvas) {
-        log_e("Status canvas objects not initialized");
-        return;
-    }
-
-    _statusTitleCanvas->clear(TFT_WHITE);
-    _statusMsgCanvas->clear(TFT_WHITE);
-    _statusTitleCanvas->drawCenterString(title, _statusTitleCanvas->width() / 2, 0, _statusTitleFont);
-    _statusMsgCanvas->drawCenterString(msg, _statusMsgCanvas->width() / 2, 0, _statusMsgFont);
-
-    _updateImpl(_statusTitleCanvas, _statusTitleCanvasX, _statusTitleCanvasY);
-    _updateImpl(_statusMsgCanvas, _statusMsgCanvasX, _statusMsgCanvasY);
-    log_i("Network status update completed");
-}
-*/
-
-// Removed statustitle, statusmsg, and nickname UI controls
-/*
-void StatusView::displayNickname(String &nickname) {
-    log_i("Displaying nickname: %s", nickname.c_str());
-    if (!_nicknameCanvas1) {
-        log_e("Nickname canvas 1 not initialized");
-        return;
-    }
-
-    const lgfx::IFont* fontTable[] = {&fonts::efontCN_16, &fonts::efontCN_14, &fonts::efontCN_12, &fonts::efontCN_10};
-    size_t i = 0;
-
-    for (i = 0; i < 4; i++) {
-        if (_nicknameCanvas1->textWidth(nickname, fontTable[i]) > 95) {
-            continue;
-        } else {
-            break;
-        }
-    }
-
-    log_i("Selected font index: %d", i);
-    if (i >= 4) {
-        splitLongString(nickname, 95, fontTable[3]);
-        i = 3;
-    }
-
-    _nicknameCanvas1->clear();
-    int32_t cursorX = 97 / 2;
-    int32_t cursorY = (32 - _canvas->fontHeight(fontTable[i])) / 2;
-    _nicknameCanvas1->drawCenterString(nickname, cursorX, cursorY, fontTable[i]);
-
-    _updateImpl(_nicknameCanvas1, _nicknameCanvasX, _nicknameCanvasY);
-    updateNickname(nickname);
-    log_i("Nickname display completed");
-}
-
-void StatusView::updateNickname(String &nickname) {
-    log_i("Updating nickname: %s", nickname.c_str());
-    if (!_nicknameCanvas) {
-        log_e("Nickname canvas not initialized");
-        return;
-    }
-
-    const lgfx::IFont* fontTable[] = {&fonts::efontCN_16, &fonts::efontCN_14, &fonts::efontCN_12, &fonts::efontCN_10};
-    size_t i = 0;
-
-    for (i = 0; i < 4; i++) {
-        if (_nicknameCanvas->textWidth(nickname, fontTable[i]) > 95) {
-            continue;
-        } else {
-            break;
-        }
-    }
-
-    log_i("Selected font index: %d", i);
-    if (i >= 4) {
-        splitLongString(nickname, 95, fontTable[3]);
-        i = 3;
-    }
-
-    _nicknameCanvas->clear();
-    int32_t cursorX = 97 / 2;
-    int32_t cursorY = (32 - _nicknameCanvas->fontHeight(fontTable[i])) / 2;
-    _nicknameCanvas->drawCenterString(nickname, cursorX, cursorY, fontTable[i]);
-
-    _updateImpl(_nicknameCanvas, _nicknameCanvasX, _nicknameCanvasY);
-    log_i("Nickname update completed");
-}
-*/
 
 void StatusView::load() {
     log_i("Loading view");
-    _lcd->clear(TFT_WHITE);
+    _lcd->clear();
     _lcd->waitDisplay();
     log_i("Pushing main canvas to display");
     _updateImpl(_canvas, 0, 0);
@@ -1066,8 +863,21 @@ void StatusView::_updateImpl(M5Canvas *canvas, int32_t x, int32_t y)
         log_e("Attempted to update null canvas");
         return;
     }
+
+    // Get the dimensions of the canvas for partial update
+    int32_t w = canvas->width();
+    int32_t h = canvas->height();
+
+    // Begin transaction for partial update
+    _lcd->beginTransaction();
+
+    // Push the sprite to the display
     canvas->pushSprite(x, y);
-    log_d("Canvas update complete");
+
+    // End transaction
+    _lcd->endTransaction();
+
+    log_d("Canvas update complete with partial update (x=%ld, y=%ld, w=%ld, h=%ld)", x, y, w, h);
 }
 
 void StatusView::splitLongString(String &text, int32_t maxWidth, const lgfx::IFont* font) {
@@ -1159,51 +969,54 @@ void StatusView::updateBME688(float temperature, float humidity, float pressure,
 
     // Update temperature display
     log_i("Updating temperature display");
-    _bme688TempCanvas->fillSprite(TFT_WHITE);
+    _bme688TempCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", temperature);
-    _bme688TempCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688TempCanvas->drawRightString(str, _bme688TempCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing temperature canvas to display at (%ld, %ld)", _bme688TempCanvasX, _bme688TempCanvasY);
-    _bme688TempCanvas->pushSprite(_bme688TempCanvasX, _bme688TempCanvasY);
+    _updateImpl(_bme688TempCanvas, _bme688TempCanvasX, _bme688TempCanvasY);
 
     // Update humidity display
     log_i("Updating humidity display");
-    _bme688HumiCanvas->fillSprite(TFT_WHITE);
+    _bme688HumiCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", humidity);
-    _bme688HumiCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688HumiCanvas->drawRightString(str, _bme688HumiCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing humidity canvas to display at (%ld, %ld)", _bme688HumiCanvasX, _bme688HumiCanvasY);
-    _bme688HumiCanvas->pushSprite(_bme688HumiCanvasX, _bme688HumiCanvasY);
+    _updateImpl(_bme688HumiCanvas, _bme688HumiCanvasX, _bme688HumiCanvasY);
 
     // Update pressure display
     log_i("Updating pressure display");
-    _bme688PressCanvas->fillSprite(TFT_WHITE);
+    _bme688PressCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", pressure);
-    _bme688PressCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688PressCanvas->drawRightString(str, _bme688PressCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing pressure canvas to display at (%ld, %ld)", _bme688PressCanvasX, _bme688PressCanvasY);
-    _bme688PressCanvas->pushSprite(_bme688PressCanvasX, _bme688PressCanvasY);
+    _updateImpl(_bme688PressCanvas, _bme688PressCanvasX, _bme688PressCanvasY);
 
     // Update gas resistance display
     log_i("Updating gas resistance display");
-    _bme688GasCanvas->fillSprite(TFT_WHITE);
+    _bme688GasCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", gasResistance);
-    _bme688GasCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688GasCanvas->drawRightString(str, _bme688GasCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing gas resistance canvas to display at (%ld, %ld)", _bme688GasCanvasX, _bme688GasCanvasY);
-    _bme688GasCanvas->pushSprite(_bme688GasCanvasX, _bme688GasCanvasY);
+    _updateImpl(_bme688GasCanvas, _bme688GasCanvasX, _bme688GasCanvasY);
 
     // Update IAQ display
     log_i("Updating IAQ display");
-    _bme688IaqCanvas->fillSprite(TFT_WHITE);
+    _bme688IaqCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", iaq);
-    _bme688IaqCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688IaqCanvas->drawRightString(str, _bme688IaqCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing IAQ canvas to display at (%ld, %ld)", _bme688IaqCanvasX, _bme688IaqCanvasY);
-    _bme688IaqCanvas->pushSprite(_bme688IaqCanvasX, _bme688IaqCanvasY);
+    _updateImpl(_bme688IaqCanvas, _bme688IaqCanvasX, _bme688IaqCanvasY);
 
     // Update CO2 equivalent display
     log_i("Updating CO2 equivalent display");
-    _bme688Co2EqCanvas->fillSprite(TFT_WHITE);
+    _bme688Co2EqCanvas->clear();
     snprintf(str, sizeof(str), "%.1f", co2Equivalent);
-    _bme688Co2EqCanvas->drawString(str, 0, 0, _bme688OptionFont);
+    _bme688Co2EqCanvas->drawRightString(str, _bme688Co2EqCanvas->width(), 0, _bme688OptionFont);
     log_i("Pushing CO2 equivalent canvas to display at (%ld, %ld)", _bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
-    _bme688Co2EqCanvas->pushSprite(_bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
+    _updateImpl(_bme688Co2EqCanvas, _bme688Co2EqCanvasX, _bme688Co2EqCanvasY);
+
+    // Wait for display to complete refresh
+    _lcd->waitDisplay();
 
     log_i("BME688 update completed successfully");
 }
@@ -1224,16 +1037,16 @@ void StatusView::updateSCD40(uint16_t co2, float temperature, float humidity)
 
     // Clear all canvases
     log_i("Clearing SCD40 canvases");
-    _co2Canvas->clear(TFT_WHITE);
-    _tempCanvas->clear(TFT_WHITE);
-    _humiCanvas->clear(TFT_WHITE);
+    _co2Canvas->clear();
+    _tempCanvas->clear();
+    _humiCanvas->clear();
 
     // Update CO2 with bounds checking
     if (co2 >= 400 && co2 <= 5000) {
         snprintf(str, sizeof(str), "%d", co2);
         log_i("Updating CO2 display: %s", str);
         _co2Canvas->drawRightString(str, _co2Canvas->width(), 0, _scd40OptionFont);
-        _co2Canvas->pushSprite(_co2CanvasX, _co2CanvasY);
+        _updateImpl(_co2Canvas, _co2CanvasX, _co2CanvasY);
     } else {
         log_w("CO2 value out of bounds: %d", co2);
     }
@@ -1244,7 +1057,7 @@ void StatusView::updateSCD40(uint16_t co2, float temperature, float humidity)
         snprintf(str, sizeof(str), "%.2f", temperature);
         log_i("Updating temperature display: %s", str);
         _tempCanvas->drawRightString(str, _tempCanvas->width(), 0, _scd40OptionFont);
-        _tempCanvas->pushSprite(_tempCanvasX, _tempCanvasY);
+        _updateImpl(_tempCanvas, _tempCanvasX, _tempCanvasY);
     } else {
         log_w("Temperature value out of bounds: %.2f", temperature);
     }
@@ -1255,10 +1068,13 @@ void StatusView::updateSCD40(uint16_t co2, float temperature, float humidity)
         snprintf(str, sizeof(str), "%.2f", humidity);
         log_i("Updating humidity display: %s", str);
         _humiCanvas->drawRightString(str, _humiCanvas->width(), 0, _scd40OptionFont);
-        _humiCanvas->pushSprite(_humiCanvasX, _humiCanvasY);
+        _updateImpl(_humiCanvas, _humiCanvasX, _humiCanvasY);
     } else {
         log_w("Humidity value out of bounds: %.2f", humidity);
     }
+
+    // Wait for display to complete refresh
+    _lcd->waitDisplay();
 
     log_i("SCD40 update completed");
 }

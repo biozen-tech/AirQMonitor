@@ -148,6 +148,9 @@ WakeupType_t wakeupType = E_WAKEUP_TYPE_UNKNOWN;
 
 RunMode_t runMode = E_RUN_MODE_MAIN;
 
+// Flag to track if a full screen refresh is needed in mainApp
+bool mainAppNeedsFullRefresh = true;
+
 AirQ_GFX lcd;
 M5Canvas mainCanvas(&lcd);
 StatusView statusView(&lcd, &mainCanvas);
@@ -251,8 +254,6 @@ void setup() {
     appWebServer();
 
     log_i("I2C init");
-//    pinMode(GROVE_SDA, OUTPUT);
-//    pinMode(GROVE_SCL, OUTPUT);
     Wire1.begin(GROVE_SDA, GROVE_SCL);
     Wire.begin(I2C1_SDA_PIN, I2C1_SCL_PIN);
 
@@ -466,6 +467,7 @@ void factoryApp(ButtonEvent_t *buttonEvent) {
                         lastCountDown = 5;
                         // The countdown is over, enter the main application
                         runMode = E_RUN_MODE_MAIN;
+                        mainAppNeedsFullRefresh = true;
                     }
                     lastCountDownUpdate = currentMillisecond;
                 }
@@ -528,8 +530,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             sensor.scd40.humidity
         );
         statusView.updatePower(sensor.battery.raw);
-        // Removed countdown display
-        // statusView.updateCountdown(db.rtc.sleepInterval);
         statusView.updateSEN55(
             sensor.sen55.massConcentrationPm1p0,
             sensor.sen55.massConcentrationPm2p5,
@@ -549,7 +549,15 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             sensor.bme680.co2Equivalent
         );
 
-        statusView.load();
+        // Only perform a full screen refresh on first draw or when coming back to this mode
+        if (mainAppNeedsFullRefresh) {
+            statusView.load();
+            mainAppNeedsFullRefresh = false;
+        } else {
+            // Ensure the display is refreshed after updating the sensor values
+            lcd.waitDisplay();
+        }
+
         lastMillisecond = currentMillisecond;
         if (
             lastCountDown == db.rtc.sleepInterval
@@ -564,8 +572,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
 
     if (currentMillisecond - lastCountDownUpdate > 1000) {
         lastCountDown--;
-        // Removed countdown display
-        // statusView.displayCountdown(lastCountDown);
         if (lastCountDown == 0) {
             lastCountDown = db.rtc.sleepInterval;
             refresh = true;
@@ -579,7 +585,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             successCounter += 1;
             preferences.putUInt("OK", successCounter);
             String msg = "OK:" + String(successCounter);
-            // statusView.displayNetworkStatus("Upload", msg.c_str());
             runingEzdataUpload = false;
             ezdataState = E_EZDATA_STATE_SUCCESS;
             ezdataStatus = true;
@@ -587,7 +592,6 @@ void mainApp(ButtonEvent_t *buttonEvent) {
             failCounter += 1;
             preferences.putUInt("NG", failCounter);
             String msg = "NG:" + String(failCounter);
-            // statusView.displayNetworkStatus("Upload", msg.c_str());
         }
     }
 
@@ -602,6 +606,7 @@ void ezdataApp(ButtonEvent_t *buttonEvent) {
 
     if (buttonEvent->id == E_BUTTON_A) {
         runMode = E_RUN_MODE_MAIN;
+        mainAppNeedsFullRefresh = true;
         refresh = true;
         return ;
     }
@@ -628,6 +633,7 @@ void settingApp(ButtonEvent_t *buttonEvent) {
         && buttonEvent->type == E_BUTTON_CLICK_TYPE_SINGLE
     ) {
         runMode = E_RUN_MODE_MAIN;
+        mainAppNeedsFullRefresh = true;
         refresh = true;
         return;
     }
@@ -695,6 +701,7 @@ void apSettingApp(ButtonEvent_t *buttonEvent) {
             }
         }
         runMode = E_RUN_MODE_MAIN;
+        mainAppNeedsFullRefresh = true;
         settingState = E_AP_SETTING_STATE_INIT;
         refresh = true;
         return;
@@ -762,6 +769,7 @@ void apSettingApp(ButtonEvent_t *buttonEvent) {
         case E_AP_SETTING_STATE_DONE: {
             if (esp_timer_get_time() / 1000 - lastMillisecond > 1000) {
                 runMode = E_RUN_MODE_MAIN;
+                mainAppNeedsFullRefresh = true;
                 settingState = E_AP_SETTING_STATE_INIT;
                 refresh = true;
                 WiFi.softAPdisconnect();
@@ -862,17 +870,7 @@ void networkStatusUpdateServiceTask() {
     static String nickname = "";
 
     if (xQueueReceive(networkStatusMsgEventQueue, &networkStatusMsgEvent, (TickType_t)10) == pdTRUE) {
-        // if (runMode == E_RUN_MODE_MAIN) {
-        //     statusView.displayNetworkStatus(
-        //         networkStatusMsgEvent.title, 
-        //         networkStatusMsgEvent.content
-        //     );
-        // } else {
-            // statusView.updateNetworkStatus(
-            //     networkStatusMsgEvent.title,
-            //     networkStatusMsgEvent.content
-            // );
-        // }
+        // Network status message received but not displayed
     }
     if (runMode == E_RUN_MODE_MAIN && nickname != db.nickname) {
         nickname = db.nickname;
@@ -880,7 +878,6 @@ void networkStatusUpdateServiceTask() {
             nickname = "AirQ";
         }
         log_d("%s", db.nickname.c_str());
-        // statusView.displayNickname(nickname);
         nickname = db.nickname;
     }
 

@@ -20,6 +20,7 @@ public:
     void begin();
     void load();
     void disappear();
+    void displaySplashScreen();
 
     void updateSCD40(uint16_t co2, float temperature, float humidity);
     void updateSEN55(
@@ -34,23 +35,12 @@ public:
     );
     void updateBME688(float temperature, float humidity, float pressure, float gasResistance, float iaq, float co2Equivalent);
     void updatePower(uint32_t voltage);
-    // Removed countdown display
-    // void updateCountdown(uint32_t seconds);
-    // void displayCountdown(uint32_t seconds);
-    // Removed statustitle, statusmsg, and nickname UI controls
-    // void displayNetworkStatus(const char *title, const char *msg);
-    // void updateNetworkStatus(const char *title, const char *msg);
-    // void displayNickname(String &nickname);
-    // void updateNickname(String &nickname);
 
 private:
-    // Removed statustitle, statusmsg, and nickname UI controls
-    // void initLOGO();
     void initSCD40();
     void initPower();
     void initSEN55();
     void initBME688();
-    // void initStatus();
     void _updateImpl(M5Canvas *canvas, int32_t x, int32_t y);
     void splitLongString(String &text, int32_t maxWidth, const lgfx::IFont* font);
 
@@ -148,31 +138,9 @@ private:
     // Power
     M5Canvas *_voltageCanvas = nullptr;
     M5Canvas *_percentageCanvas = nullptr;
-    // Removed countdown display
-    // M5Canvas *_chartCanvas = nullptr;
-    // M5Canvas *_chartCanvas1 = nullptr;
     int32_t _voltageCanvasX = 0;
     int32_t _voltageCanvasY = 0;
     int32_t _percentageCanvasX = 0;
     int32_t _percentageCanvasY = 0;
-    // Removed countdown display
-    // int32_t _chartCanvasX = 0;
-    // int32_t _chartCanvasY = 0;
 
-    // Removed statustitle, statusmsg, and nickname UI controls
-    // Status
-    // M5Canvas *_statusTitleCanvas = nullptr;
-    // M5Canvas *_statusTitleCanvas1 = nullptr;
-    // M5Canvas *_statusMsgCanvas = nullptr;
-    // M5Canvas *_statusMsgCanvas1 = nullptr;
-    // int32_t _statusTitleCanvasX = 0;
-    // int32_t _statusTitleCanvasY = 0;
-    // int32_t _statusMsgCanvasX = 0;
-    // int32_t _statusMsgCanvasY = 0;
-
-    // Logo
-    // M5Canvas *_nicknameCanvas = nullptr;
-    // M5Canvas *_nicknameCanvas1 = nullptr;
-    // int32_t _nicknameCanvasX = 0;
-    // int32_t _nicknameCanvasY = 0;
 };

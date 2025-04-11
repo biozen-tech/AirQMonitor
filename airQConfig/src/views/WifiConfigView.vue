@@ -56,9 +56,6 @@ const data = ref({
       "server_0": "pool.ntp.org",
       "server_1": "time.nist.gov",
       "tz": "GMT+8",
-    },
-    "buzzer": {
-      "mute": true
     }
   }
 })
@@ -396,21 +393,6 @@ const handleToggleDropdown = () => {
             <select id="time_zone" class="select border bg-white rounded p-1 h-8 w-full" v-model="data.config.ntp.tz">
               <option v-for="time in timezones" :value="time">
                 {{ time }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="rounded-lg mx-auto sm:max-w-sm bg-slate-100 my-4">
-        <div class="bg-slate-300 rounded-t-lg p-3 sm:px-6 text-xl sm:font-semibold text-gray-600">
-          Buzzer Config
-        </div>
-        <div class="p-4 text-gray-600">
-          <div class="my-2">
-            <label for="buzzer" class="inline-block w-48 mr-2">State</label>
-            <select id="buzzer" class="select border bg-white rounded p-1 h-8 w-full" v-model="data.config.buzzer.mute">
-              <option v-for="state in states" :value="state.value">
-                {{ state.name }}
               </option>
             </select>
           </div>

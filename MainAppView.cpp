@@ -869,13 +869,15 @@ void StatusView::_updateImpl(M5Canvas *canvas, int32_t x, int32_t y)
     int32_t h = canvas->height();
 
     // Begin transaction for partial update
-    _lcd->beginTransaction();
+    _lcd->startWrite();
 
     // Push the sprite to the display
     canvas->pushSprite(x, y);
 
     // End transaction
-    _lcd->endTransaction();
+    _lcd->endWrite();
+
+    _lcd->waitDisplay();
 
     log_d("Canvas update complete with partial update (x=%ld, y=%ld, w=%ld, h=%ld)", x, y, w, h);
 }

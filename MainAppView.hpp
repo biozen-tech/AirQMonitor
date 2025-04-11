@@ -3,12 +3,6 @@
 #include <M5Unified.h>
 #include <lgfx/v1/panel/Panel_GDEW0154M09.hpp>
 
-// Logging macros
-#define LOG_TAG "StatusView"
-#define LOGI(fmt, ...) ESP_LOGI(LOG_TAG, fmt, ##__VA_ARGS__)
-#define LOGW(fmt, ...) ESP_LOGW(LOG_TAG, fmt, ##__VA_ARGS__)
-#define LOGE(fmt, ...) ESP_LOGE(LOG_TAG, fmt, ##__VA_ARGS__)
-#define LOGD(fmt, ...) ESP_LOGD(LOG_TAG, fmt, ##__VA_ARGS__)
 
 class StatusView
 {
